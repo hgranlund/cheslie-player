@@ -1,24 +1,49 @@
-var Chess = require('./modules/chess-extended.js').Chess;
+var Chess = require('./modules/chess-extended.js').Chess,
+    deepening = require('./modules/deepening.js'),
+    Modules = { deepening: deepening.move },
+    ai = {};
 
+var
+    PAWN = 'p',
+    KNIGHT = 'n',
+    BISHOP = 'b',
+    ROOK = 'r',
+
+    QUEEN = 'q',
+    KING = 'k',
+    BLACK = 'b',
+    WHITE = 'w',
+    PIECEVALUES = {
+        [PAWN]: 1,
+        [KNIGHT]: 3,
+        [BISHOP]: 3,
+        [ROOK]: 5,
+        [QUEEN]: 9,
+        [KING]: 0
+    },
+    valuePieces = function (chess, color) {
+        return chess.pieces(color)
+            .map(p => { return PIECEVALUES[p.type]; })
+            .reduce((v1, v2) => { return v1 + v2; }, 0);
+    };
 // Feel free to give your AI a more personal name
-exports.name = 'Tørrfisk - ' + Math.floor(Math.random() * 1000);
+//ai.name = 'Tørrfisk - ' + Math.floor(Math.random() * 1000);
 
-/*
- * This is where you make your move.
- * You are given a chessboard in FEN format and need to return a move as a SAN string (or a promise resolving to a SAN string)
- * Don't worry to much about FEN and SAN, chess.js can handle all the details :-)
- */
-exports.move = function (board) {
-	// Make a new chess.js object from the FEN-board
-    var chess = new Chess(board),
-        moves = chess.moves(), // Get all legal moves
-        move = moves[Math.floor(Math.random() * moves.length)];
 
-    return move;
+ai.move = function (board) {
+    var depth = 4,
+        score = function (chess) {
+            var score = (valuePieces(chess, 'w') - valuePieces(chess, 'b')) * 2;
+            if (chess.in_check()) score -= 1;
+            if (chess.in_checkmate()) score -= 10000;
+            return chess.turn() === 'w' ? score : score * -1;
+        },
+        span = 3;
+
+
+    return Modules.deepening(board, depth, score, span);
 };
 
-/*
- * running npm start in the console will run your AI again a player making random moves.
- * npm test will run some simple tests valitdating that the player makes a legal move.
- * npm run tournament will connect the player to the tournament server.
- */
+//https://jsfiddle.net/vo5sc0r6/7/
+exports.move = ai.move;
+exports.name = ai.name;
