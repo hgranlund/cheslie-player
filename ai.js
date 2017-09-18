@@ -35,7 +35,7 @@ ai.move = function (board) {
         score = function (chess) {
             var score = (valuePieces(chess, 'w') - valuePieces(chess, 'b')) * 2;
             if (chess.in_check()) score -= 1;
-            if (chess.in_checkmate()) score -= 10000;
+            if (chess.in_checkmate()) score += 10000;
             return chess.turn() === 'w' ? score : score * -1;
         },
         span = 3;
