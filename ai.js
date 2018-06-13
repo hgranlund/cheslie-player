@@ -66,7 +66,7 @@ var score = (chess) => {
     var score = (valuePieces(chess, 'w') - valuePieces(chess, 'b')) * 10;
 
     if (chess.in_check()) score -= 1;
-    if (chess.in_checkmate()) score += 10000;
+    if (chess.in_checkmate()) score -= 10000;
     score += valueMoves(chess)
     score += possitionScore(chess);
     score += Math.random()
@@ -87,18 +87,24 @@ ai.move = function (board) {
     if (chess.numberOfPieces() <= 5) return endgame.move(board);
 
     var depth = 4,
-        span = 3;
-    if (chess.numberOfPieces() <= 30) {
-        depth = 5
+        span = 3,
+        numerOfMoves = chess.moves().length;
+    console.log(numerOfMoves);
+    if (numerOfMoves <= 5) {
+        depth = 8
+        span = 4
+    }
+    if (numerOfMoves <= 10) {
+        depth = 6
+        span = 4
+    }
+    if (numerOfMoves <= 15) {
+        depth = 4
+        span = 3
+    }
+    if (numerOfMoves <= 20) {
+        depth = 3
         span = 2
-    }
-    if (chess.numberOfPieces() <= 20) {
-        depth = 6
-        span = 3
-    }
-    if (chess.numberOfPieces() <= 10) {
-        depth = 6
-        span = 3
     }
     return Modules.deepening(board, depth, score, span);
 };
