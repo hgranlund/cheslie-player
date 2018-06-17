@@ -1,7 +1,7 @@
 var Chess = require('../modules/chess-extended.js').Chess,
     white = require('../ai.js'),
     black = require('../ai.js'),
-    //black = require('../sample-players/rnd-jesus.js'),
+    // black = require('../sample-players/rnd-jesus.js'),
     // black = require('../sample-players/endgamer.js'),
     // black = require('../sample-players/minmaxer.js'),
     // black = require('../sample-players/decender.js'),

@@ -21,6 +21,7 @@ var
         [QUEEN]: 9,
         [KING]: 10
     },
+    // move.flags
 // 'n' - a non - capture
 // 'b' - a pawn push of two squares
 // 'e' - an en passant capture
@@ -120,34 +121,34 @@ var
             .reduce(sum, 0);
     },
     valueMoves = (chess) => {
-        return chess.moves({
+        var score = chess.moves({
                 verbose: true
             })
             .map(move => { return move.flags.split('')})
             .map(scoreList => { return scoreList.map(flag => { return mapMoveFlagToScore[flag] })})
             .map(scoreList => {return scoreList.reduce(sum,0)})
             .reduce(sum, 0);
+        return chess.turn() === 'w' ? score : score * -1
     },
     positionScore = (chess) =>  {
-        var scorePlayer=  chess.pieces(chess.turn())
+        var scorePlayer=  chess.pieces('w')
             .map(p => {return piecePositionValue(p)})
             .reduce(sum, 0);
-        var scoreOther = chess.pieces(chess.turn() == 'w' ? 'b' : 'w' )
+        var scoreOther = chess.pieces('b')
             .map(p => { return piecePositionValue(p) })
             .reduce(sum, 0);
         return scorePlayer - scoreOther ; 
     },
     materialScore = (chess) => {
-        var score =  (valuePieces(chess, 'w') - valuePieces(chess, 'b')) * 1000;
-        return chess.turn() === 'w' ? score : score * -1
-    }
+        return  (valuePieces(chess, 'w') - valuePieces(chess, 'b')) * 1000;
+    },
+    blackOrWhiteSign = (score, chess) => { return chess.turn() === 'w' ? score : score * -1}
 
 var score = (chess) => {
     var score = materialScore(chess);
-    
-    if (chess.in_check()) score -= 5;
-    if (chess.in_checkmate()) score -= 1000000;
-    score += valueMoves(chess)
+    if (chess.in_check()) score -= blackOrWhiteSign(5, chess);
+    if (chess.in_checkmate()) score -= blackOrWhiteSign(1000000, chess);
+    score += blackOrWhiteSign(valueMoves(chess), chess);
     score += positionScore(chess);
     score += Math.random();
     return score;
