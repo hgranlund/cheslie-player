@@ -21,6 +21,14 @@ var
         [QUEEN]: 9,
         [KING]: 10
     },
+// 'n' - a non - capture
+// 'b' - a pawn push of two squares
+// 'e' - an en passant capture
+// 'c' - a standard capture
+// 'p' - a promotion
+// 'k' - kingside castling
+// 'q' - queenside castling
+    mapMoveFlagToScore = {'n': 0, 'b': 0, 'e': 1, 'c': 2, 'p': 1, 'k': 3, 'q':3},
     squareLatterToInt = {'a':7, 'b':6, 'c':5,'d':4, 'e':3,'f':2,'g':1,'h':0},
     pieceSquareTables = {
         p: [0, 0, 0, 0, 0, 0, 0, 0,
@@ -115,7 +123,9 @@ var
         return chess.moves({
                 verbose: true
             })
-            .map(move => {return (move.flag === 'c') ? 1 : 0})
+            .map(move => { return move.flags.split('')})
+            .map(scoreList => { return scoreList.map(flag => { return mapMoveFlagToScore[flag] })})
+            .map(scoreList => {return scoreList.reduce(sum,0)})
             .reduce(sum, 0);
     },
     positionScore = (chess) =>  {
