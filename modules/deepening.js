@@ -36,16 +36,16 @@ var firstInteresting = function (node, score, n) {
             if (a.score < b.score) return -1;
             if (a.score > b.score) return 1;
             return 0;
-        })
-        .map(function (move) {
-            return move.move;
         });
+        
 
 
     if (interesting.length >= n) {
-        return interesting.slice(0, n);
+        interesting =  interesting.slice(0, n);
     }
-    return interesting;
+    return interesting.map(function (move) {
+        return move.move;
+    });
 };
 
 var decent = function (fen, depth, span, maximizing, score, child) {

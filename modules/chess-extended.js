@@ -20,7 +20,10 @@ exports.Chess = function (fen) {
         };
 
         return squares.map(function (square) {
-            return chess.get(square);
+            var piece = chess.get(square);
+            if (!piece) return null;
+            piece.square = square;
+            return piece;
         }).filter(function (val) {
             if (color && val) {
                 return val.color === color;
