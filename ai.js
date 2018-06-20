@@ -1,28 +1,24 @@
 var Chess = require('./modules/chess-extended.js').Chess;
-var minmax = require('./modules/minmax.js');
-var rndJesus = require('./sample-players/rnd-jesus.js');
-var endgamer = require('./sample-players/endgamer.js');
-var minmaxer = require('./sample-players/minmaxer.js');
-exports.name = 'FaceOfBoe - ' + Math.floor(Math.random() * 1000);
 
+// Feel free to give your AI a more personal name
+exports.name = 'Tørrfisk - ' + Math.floor(Math.random() * 1000);
 
-var pieceValues = {
-    'p': 1,
-    'n': 3,
-    'b': 3,
-    'r': 5,
-    'q': 9,
-    'k': 100,
+/*
+ * This is where you make your move.
+ * You are given a chessboard in FEN format and need to return a move as a SAN string (or a promise resolving to a SAN string)
+ * Don't worry to much about FEN and SAN, chess.js can handle all the details :-)
+ */
+exports.move = function (board) {
+	// Make a new chess.js object from the FEN-board
+    var chess = new Chess(board),
+        moves = chess.moves(), // Get all legal moves
+        move = moves[Math.floor(Math.random() * moves.length)];
+
+    return move;
 };
 
-var sumPieceValues = function (pieces) {
-    return pieces.reduce((a, b) => a + b, 0);
-};
-
-exports.move = function (board, doMove) {
-    minmax.move(board, doMove, function (chess) {
-        var black = sumPieceValues(chess.pieces('b').map((p) => pieceValues[p.type]));
-        var white = sumPieceValues(chess.pieces('w').map((p) => pieceValues[p.type]));
-        return (chess.turn() == 'w') ? white - black : black - white;
-    }, 10);
-};
+/*
+ * running npm start in the console will run your AI again a player making random moves.
+ * npm test will run some simple tests valitdating that the player makes a legal move.
+ * npm run tournament will connect the player to the tournament server.
+ */

@@ -1,12 +1,14 @@
-var Chess = require('chess.js').Chess,
+var Chess = require('../modules/chess-extended.js').Chess,
     white = require('../ai.js'),
     black = require('../sample-players/rnd-jesus.js'),
     // black = require('../sample-players/endgamer.js'),
     // black = require('../sample-players/minmaxer.js'),
+    // black = require('../sample-players/decender.js'),
     chess = new Chess(),
-
+    chessboardjs,
+    chessBoard,
+    inBrowser = (typeof window !== 'undefined'),
     SUPPORT_UNICODE = true,
-
     unicodeMap = {
         'K': '\u2654',
         'Q': '\u2655',
@@ -52,20 +54,59 @@ var reason = function (chess) {
     return 'Draw since the game lasted over 100 moves';
 };
 
+var doMove = function (chess, white, black, move) {
+    chess.move(move);
+    updateChessBoard(chess);
+    console.log(unicode(chess.ascii() + '\n\r K = White, k = ') + 'Black');
+    setTimeout(function () {
+        play(chess, white, black);
+    }, 10);
+};
+
+var initChessBoard = function (chess) {
+    if (!inBrowser) return;
+    chessboardjs = require('../modules/vendor/chessboardjs0.3.0/js/chessboard-0.3.0.js'),
+        window.$ = require("jquery");
+    chessBoard = ChessBoard('chess-board', {
+        pieceTheme: '../modules/vendor/chessboardjs0.3.0/img/chesspieces/wikipedia/{piece}.png',
+        position: chess.fen()
+    });
+}
+
+var updateChessBoard = function (chess) {
+    if (!inBrowser) return;
+    chessBoard.position(chess.fen(), false);
+}
+
+var setStatus = function (status) {
+    console.log(status);
+    if (inBrowser) {
+        $("#status").text("");
+        $("#status").text(status);
+    }
+
+}
+
 var play = function (chess, white, black) {
+    initChessBoard(chess);
     if (chess.game_over()) {
-        console.log(reason(chess));
+        setStatus(reason(chess))
         return;
     };
-
     var board = chess.fen(),
         player = chess.turn() === 'w' ? white : black;
+    move = player.move(board);
 
-    player.move(board, function (move) {
-        chess.move(move);
-        console.log(unicode(chess.ascii() + '\n\r K = White, k = ') + 'Black');
-        play(chess, white, black);
-    });
+    if (typeof move === "string") {
+        doMove(chess, white, black, move);
+    } else {
+        move.then(function (move) {
+            doMove(chess, white, black, move);
+        }).catch(function (err) {
+            console.log(err.error);
+            doMove(chess, white, black, err.move);
+        });
+    }
 };
 
 play(chess, white, black);

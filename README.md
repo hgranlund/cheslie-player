@@ -7,6 +7,8 @@ A repository for easy chess-engine writing.
 Installation
 ------------
 
+_If you have trouble installing the player, or just simply don't want to bother with local installation, check out the [cheslie-player JSFiddle](https://jsfiddle.net/63gkjk9j/7/)_
+
 In order to use cheslie-player, you'll need [node.js](https://nodejs.org/en/). [Git](https://git-scm.com/) is nice too.
 
 Simply clone the cheslie-player repo, and install the dependencies by running the commands below.
@@ -17,20 +19,30 @@ $> cd cheslie-player
 $> npm install
 ```
 
+Workshop wiki
+-------------
+
+The best place to get started with writing your own chess AI using cheslie-player is the [workshop wiki](https://github.com/cheslie-team/cheslie-player/wiki). Basic usage is shown below, but the wiki contains a lot more information, including a more detailed getting started guide.
+
 
 Usage
 -----
 
-When you have installed cheslie-player, you'll probably want to write your own chess player.
+When you have installed cheslie-player, you'll probably want to write your own chess AI.
 The repo is set up so that all engine writing can be done in the `ai.js` file. If you just cloned the repo, it'll contain a sample player, making random moves.
 
 __Testing your player__
 
-You can test your chess player by runnin the command `npm test` (or `npm run start-win`, if you're using windows). This will play a chess game where your player faces an opponent making random moves.
-All moves and positions are printed to the console as shown in the sample listing below.
+To run all unit tests use:
+
+    npm test
+
+The unit tests won't do anything terribly interesting, but they'll check that your AI is capable of making leagal chess moves.
+
+You can test your chess AI more extensively by runnin the command `npm start`. This will play a chess game where your AI faces an opponent making random moves. All moves and positions are printed to the console as shown in the sample listing below.
 
 ```
-$> npm test
+$> npm start
 
 > node scripts/play-random.js
 
@@ -68,23 +80,25 @@ Black won by checkmate
 $>
 ```
 
+If you're running locally, you can also try out the command `npm run dev-browser` to get a visualization of your AI playing a game in the browser.
+
 __Playing against other opponents__
 
-When you're confident that your player can beat any other ai out there, you can start the player, and join a public lobby with the command `npm start`.
-This will connect the player to a game and a lobby server, and should produce an output similar to the listing below.
+When you're confident that your player can beat any other ai out there, you can start the player and join the tournament server with the command `npm run tournament` (or `npm run tournament-win`, if you're using windows).
+This will connect your AI to a game and tournament server, and should produce an output similar to the listing below.
 
 ```
-$> npm start
+$> npm run tournament
 
 > NODE_ENV=production node player.js
 
-Player Tørrfisk - 635 is connected to game
-Player Tørrfisk - 635 is connected to lobby
+Player Tørrfisk - 359 is connected to cheslie-tourney
+Player Tørrfisk - 359 is connected to cheslie-game
 
 
 ```
 
-When the player is running, you can visit the lobby at [cheslie-lobby.azurewebsites.net](https://cheslie-lobby.azurewebsites.net/) and start new games with other players.
+You can visit [cheslie-tourney.azurewebsites.net](http://cheslie-tourney.azurewebsites.net/) and to follow the tournament in progress.
 
 
 Chess.js and extentions
@@ -97,22 +111,22 @@ In addition some extentions are prepared as part of cheslie-player:
 
 __.pieces([optional: color])__
 
-Get all pieces on the current board. Accepts an optional color-argument, that can be used to get just the white (`'w'`) or black (`'b'`) pieces.
+Get all pieces on the current board. Accepts an optional color-argument that can be used to get just the white (`'w'`) or black (`'b'`) pieces.
 
-__.number_of_pieces([optional: color])__
+__.numberOfPieces([optional: color])__
 
-Get the number of pieces on the board. As for `.pieces()` an otional color argument is accepted.
+Get the number of pieces on the board. As for `.pieces()` an optional color argument is accepted.
 
 
 `/modules/chess-extended.js` contains all the extentions.
 
 
-__.moves_informaton()__
+__.movesInformation()__
 
-Get all available moves and information of what kind of move this is. Internally `.moves_information()` uses `.moves({ verbose: true })`, so se the chess.js documentation for more information as well.
+Get all available moves and information of what kind of move this is. Internally `.movesInformation()` uses `.moves({ verbose: true })`, so se the chess.js documentation for more information.
 
 ```
-.moves_informaton()
+.movesInformation()
 chess.moves({ verbose: true });
 // -> [{ color: 'w', from: 'a2', to: 'a3',
 //       flags: 'n', piece: 'p', san 'a3'
@@ -138,10 +152,9 @@ The flags field in verbose mode may contain one or more of the following values:
 A flag of 'pc' would mean that a pawn captured a piece on the 8th rank and promoted.
 
 
-
 Sample players and Modules
 --------------------------
 
-Some sample players are available in the `/sample-players` folder. All support the `.move(board, doMove)` construct, so you can use them directly in your own ai.js code.
+Some sample players are available in the `/sample-players` folder. All support the `.move(board)` construct, so you can use them directly in your own ai.js code.
 
 The sample players use different modules pre-prepared for easy chess-engine development. They are located under the `/modules` folder.
