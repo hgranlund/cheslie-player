@@ -53,12 +53,14 @@ var minmaxAlphaBeta = function (fen, depth, alphaBeta, maximizing, score, child)
     return { score: v.score, move: child ? child : v.move };
 };
 
-var minmax = function (fen, score, depth) {
-    return minmaxAlphaBeta(fen, depth, {alpha: Number.NEGATIVE_INFINITY, beta: Number.POSITIVE_INFINITY}, true, score, null);
+var minmax = function (fen, score, depth, maximizing = true) {
+    return minmaxAlphaBeta(fen, depth, {alpha: Number.NEGATIVE_INFINITY, beta: Number.POSITIVE_INFINITY}, maximizing, score, null);
 };
 
 exports.move = function (board, depth, score) {
-    return minmax(board, score, depth).move;
+    var chess = new Chess(board);
+    var maximizing = chess.turn() == 'w';
+    return minmax(board, score, depth, maximizing).move;
 };
 
 /*

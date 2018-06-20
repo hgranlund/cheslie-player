@@ -7,9 +7,11 @@ exports.Chess = function (fen) {
     var chess = new Chess(fen),
         numberOfMoves = 0,
         _move = chess.move,
+        _pieces= {},
         _game_over = chess.game_over;
 
     chess.pieces = function (color) {
+        if (_pieces[color]) return _pieces[color];
         var letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
             squares = [];
 
@@ -19,14 +21,18 @@ exports.Chess = function (fen) {
             });
         };
 
-        return squares.map(function (square) {
-            return chess.get(square);
+        _pieces[color] =  squares.map(function (square) {
+            var piece = chess.get(square);
+            if (!piece) return null;
+            piece.square = square;
+            return piece;
         }).filter(function (val) {
             if (color && val) {
                 return val.color === color;
             }
             return val;
         });
+        return _pieces[color];
     };
 
     chess.numberOfPieces = function (color) {

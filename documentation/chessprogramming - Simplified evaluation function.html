@@ -1,0 +1,1609 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0069)http://chessprogramming.wikispaces.com/Simplified+evaluation+function -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="search" href="http://chessprogramming.wikispaces.com/space/opensearch" type="application/opensearchdescription+xml" title="Wikispaces Search (chessprogramming Wiki)">
+<link rel="alternate" type="application/x-wiki" title="Edit This Page" href="http://chessprogramming.wikispaces.com/page/edit/Simplified+evaluation+function">
+<link rel="alternate" title="chessprogramming - All Changes" href="http://chessprogramming.wikispaces.com/wiki/xmla?v=rss_2_0" type="application/rss+xml">
+<link rel="alternate" title="chessprogramming : Simplified evaluation function - Discussion" href="http://chessprogramming.wikispaces.com/message/xml/Simplified+evaluation+function?v=rss_2_0" type="application/rss+xml">
+<link rel="alternate" title="chessprogramming : Simplified evaluation function - Edits" href="http://chessprogramming.wikispaces.com/page/xml/Simplified+evaluation+function?v=rss_2_0" type="application/rss+xml">
+<link rel="microsummary" href="http://chessprogramming.wikispaces.com/page/microsummary/Simplified+evaluation+function/edits">
+<link rel="microsummary" href="http://chessprogramming.wikispaces.com/page/microsummary/Simplified+evaluation+function/messages">
+<script type="text/javascript" async="" src="./chessprogramming - Simplified evaluation function_files/ga.js"></script><script type="text/javascript">
+  
+if (typeof ws === 'undefined') ws = {};
+ws.context = {
+  instance: {
+    id: '1',
+    url: 'wikispaces.com',
+    isMain: true,
+    supportsGoogleDocs: false,
+    isTesClassroom: false,
+  },
+  user: {
+    id: '',
+    username: '',
+    status: '',
+    locale: 'en_US',
+    imageUrlPrefix: 'http://c1.wikicdn.com/i/user_none_',
+    isTeacher: false,
+    canAdministerWiki: false,
+  },
+  wiki: {
+    id: '335449',
+    name: 'chessprogramming',
+    text: 'chessprogramming',
+    module: 'B',
+    isClassroom: false,
+    isTesClassroom: false
+    ,defaultSpaceId: 335449
+    ,isWwwWiki: false
+  },
+  project: {
+    id: '335449',
+    name: ''
+  },
+  space: {
+    id: '335449',
+    name: 'chessprogramming',
+    isDefaultSpace: true,
+    isDefaultTemplate: false
+  },
+
+  environment_name: 'prod',
+
+  path: {
+    object: 'page',
+    method: 'view',
+    page: 'Simplified evaluation function',
+    id: ''
+  },
+
+  settings: {
+    main_domain: 'wikispaces.com',
+    session_url: 'https://session.wikispaces.com/1/',
+    asset_url_prefix: 'http://c1.wikicdn.com',
+    beta_features: false,
+    isMobileSite: false,
+    isUploadCapable: true,
+    can_discuss: false,
+    has_gdocs: false,
+    isDialog: false,
+    pwin: ''
+  },
+  clockSkewMillis: 1528971946085 - ((window.performance && window.performance.timing.responseStart > 0) ? window.performance.timing.responseStart : (new Date()).getTime())
+}
+
+
+// legacy javascript API variables, use the above instead
+var wikispaces_isUserLoggedIn = !!ws.context.user.id;
+var wikispaces_isMain = ws.context.instance.isMain;
+var wikispaces_username = ws.context.user.username;
+var wikispaces_spaceName = ws.context.space.name;
+var wikispaces_projectName = ws.context.project.name;
+var wikispaces_wikiName = ws.context.wiki.name;
+var wikispaces_wikiText = ws.context.wiki.text;
+var wikispaces_isDefaultSpace = ws.context.space.isDefaultSpace;
+var wikispaces_method = ws.context.path.method;
+var wikispaces_object = ws.context.path.object;
+var wikispaces_page = ws.context.path.page;
+var wikispaces_id = ws.context.path.id;
+var wikispaces_domain = ws.context.instance.url;
+var wikispaces_isUserOrganizer = false;
+var wikispaces_main_domain = ws.context.settings.asset_url_prefix;
+var wikispaces_asset_url_prefix = ws.context.settings.asset_url_prefix;
+var wikispaces_beta_features = ws.context.settings.beta_features;
+var wikispaces_isMobileSite = ws.context.settings.isMobileSite;
+var wikispaces_isUploadCapable = ws.context.settings.isUploadCapable;
+var wikispaces_can_discuss = ws.context.settings.can_discuss;
+var wikispaces_has_gdocs = ws.context.settings.has_gdocs;
+
+</script><title>chessprogramming - Simplified evaluation function</title>
+
+<link rel="apple-touch-icon" sizes="144x144" href="http://c1.wikicdn.com/_/z6371z4x/i/logo-144.png">
+<link rel="apple-touch-icon" sizes="114x114" href="http://c1.wikicdn.com/_/j5j77xz3/i/logo-114.png">
+<link rel="apple-touch-icon" sizes="72x72" href="http://c1.wikicdn.com/_/vq8j5432/i/logo-72.png">
+<link rel="apple-touch-icon" href="http://c1.wikicdn.com/_/38515190/i/logo-57.png">
+<link rel="shortcut icon" href="http://c1.wikicdn.com/_/55v9k02z/i/logo-16.png">
+<style type="text/css">
+/* Standard theme styles */
+*, *:before, *:after {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+body {
+  font-family: arial, helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  margin: 0;
+}
+.ws-theme-header-inner,
+.ws-theme-body-inner,
+.ws-theme-footer-inner,
+.ws-theme-content-inner,
+.ws-theme-sidebar-inner {
+  position: relative;
+}
+.ws-theme-header-inner:after,
+.ws-theme-body-inner:after,
+.ws-theme-footer-inner:after,
+.ws-theme-content-inner:after,
+.ws-theme-sidebar-inner:after,
+.ws-theme-menu-inner:after {
+  content: " ";
+  visibility: hidden;
+  display: block;
+  height: 0;
+  clear: both;
+}
+.ws-theme-content, .ws-theme-sidebar {
+  overflow-x: auto;
+}
+.ws-theme-footer {
+  text-align: right;
+}
+.ws-theme-footer a, .ws-theme-footer a:hover {
+  text-decoration: none;
+}
+@media (min-width: 768px) {
+  .ws-theme-container {
+    width: 750px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  .ws-theme-content {
+    width: 550px;
+    min-height: 384px;
+    float: right;
+  }
+  .ws-theme-sidebar {
+    width: 200px;
+    float: left;
+  }
+}
+@media (min-width: 992px) {
+  .ws-theme-container {
+    width: 970px;
+  }
+  .ws-theme-content {
+    width: 770px;
+    min-height: 496px;
+  }
+}
+@media (min-width: 1200px) {
+  .ws-theme-container {
+    width: 1170px;
+  }
+  .ws-theme-content {
+    width: 970px;
+    min-height: 600px;
+  }
+}
+/* End standard theme styles */
+</style>
+<style type="text/css">
+/* Theme-specific styles */
+body {
+  background-color: #DBDBE1;
+}
+
+.ws-theme-header .WikiSearch .WikiSearchInput,
+.ws-theme-sidebar .WikiSearch .WikiSearchInput,
+.ws-theme-footer .WikiSearch .WikiSearchInput {
+  width: 100%;
+}
+
+.ws-theme-header,
+.ws-theme-sidebar,
+.ws-theme-footer {
+  color: #000000;
+}
+.ws-theme-header img,
+.ws-theme-sidebar img,
+.ws-theme-footer img {
+  padding: 0;
+  vertical-align: top;
+  border: 0;
+}
+.ws-theme-header a,
+.ws-theme-sidebar a,
+.ws-theme-footer a {
+  color: #0000FF;
+  text-decoration: none
+}
+.ws-theme-header a:hover,
+.ws-theme-sidebar a:hover,
+.ws-theme-footer a:hover {
+  text-decoration: underline;
+}
+
+.ws-theme-header,
+.ws-theme-sidebar {
+  display: none;
+}
+
+.ws-theme-body-inner {
+  padding: 3px;
+}
+
+.ws-theme-content {
+  overflow-x: visible;
+}
+.ws-theme-content-inner {
+  background-color: #FFF;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #CCC;
+}
+
+.ws-theme-footer {
+  margin: 15px 8px;
+  font-size: 12px;
+}
+
+.ws-theme-footer .WikiLicense img {
+  vertical-align: text-bottom;
+}
+
+@media (min-width: 768px) {
+  .ws-theme-container {
+    width: auto;
+  }
+
+  .ws-theme-header,
+  .ws-theme-sidebar {
+    display: block;
+  }
+
+  .ws-theme-header {
+    margin: 8px 0;
+  }
+
+  .ws-theme-body-inner {
+    padding: 0 10px;
+  }
+
+  .ws-theme-content {
+    width: auto;
+    float: none;
+    margin-left: 200px;
+  }
+  .ws-theme-content-inner {
+    width: 100%;
+    border: none;
+    float: left;
+    box-shadow: 0 0 3px 0 rgba(0,0,0,.625);
+  }
+
+  .ws-theme-sidebar {
+    padding: 15px 10px 0 0;
+  }
+  .ws-theme-sidebar ul.WikiActions,
+  .ws-theme-sidebar .WikispacesNavbar .WikispacesNavbarEntryItems ol {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  .ws-theme-sidebar ul.WikiActions > li {
+    padding: 2px;
+  }
+  .ws-theme-nav-edit {
+    color: #666;
+    text-align: center;
+  }
+}
+</style>
+<link rel="stylesheet" href="./chessprogramming - Simplified evaluation function_files/217420326D.gz.css" type="text/css">
+<link rel="stylesheet" href="./chessprogramming - Simplified evaluation function_files/9jvvjv40-internal-bootstrap.css" type="text/css">
+<link rel="stylesheet" href="./chessprogramming - Simplified evaluation function_files/vz033906-internal.css" type="text/css">
+<script src="./chessprogramming - Simplified evaluation function_files/768846k4-top.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+
+  var wsGoogleAccount = 'UA-80504-1';
+  _gaq.push(['_setAccount', wsGoogleAccount]);
+  _gaq.push(['_gat._anonymizeIp']);
+  _gaq.push(['_setDomainName', 'wikispaces.com']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_setCustomVar', 2, 'Authenticated', 'Guest', 2]);
+  _gaq.push(['_trackPageview']);
+</script><style type="text/css" id="js-fixed-header-a-style">.wiki a[name]:before { content: "\00A0"; display: inline-block; visibility: hidden; width: 0; padding-top: 0px; margin-top: -0px; }</style><script type="text/javascript" src="./chessprogramming - Simplified evaluation function_files/11kk95v9.gz.js"></script></head>
+<body><a href="http://chessprogramming.wikispaces.com/Simplified+evaluation+function#WikiContent" class="hidden sr-only sr-only-focusable">Skip to main content</a><div id="js-fixed-header-holder" class="fixed"><div class="WikispacesContent WikispacesBs3" role="banner">
+      
+    <div class="ws-main-top-nav visible-xs">
+    <div class="navbar navbar-static-top" style="margin-bottom: 0;">
+      <div class="container">
+                <div class="navbar-header">
+          <div class="visible-xs pull-left">
+            <a href="http://chessprogramming.wikispaces.com/space/menu" class="WikispacesDialogLink btn navbar-btn">
+              <i class="fa fa-bars"></i>
+            </a>
+          </div>
+          <div class="visible-xs pull-right js-globalnav-popover-container">
+                        <a href="http://www.wikispaces.com/site/signin?goto=http%3A%2F%2Fchessprogramming.wikispaces.com%2FSimplified%2Bevaluation%2Bfunction" class="btn navbar-btn ws-mobile-guest-username js-globalnav-popover-trigger" data-original-title="" title="">
+              guest
+            </a>
+                        <div class="hidden js-globalnav-popover-content">
+              <div class="WikispacesContent WikispacesBs3">
+                <div class="WikiInternalHeaderNav noHide">
+  <div class="WikiInternalHeaderNavMenu">
+                          
+                  <span class="WikiInternalHeaderNavMenuArea"><a href="http://www.wikispaces.com/user/join?goto=http%3A%2F%2Fchessprogramming.wikispaces.com%2FSimplified%2Bevaluation%2Bfunction" rel="nofollow" class="WikispacesXDomainDialogLink">Join</a></span>
+
+          <span class="divider">|</span>
+        
+        <span class="WikiInternalHeaderNavMenuArea"><a class="js-help-trigger" rel="nofollow" href="http://helpcenter.wikispaces.com/">Help</a></span>
+
+        <span class="divider">|</span>
+      
+      <span class="WikiInternalHeaderNavMenuArea"><a href="http://www.wikispaces.com/site/signin?goto=http%3A%2F%2Fchessprogramming.wikispaces.com%2FSimplified%2Bevaluation%2Bfunction" rel="nofollow" class="WikispacesXDomainDialogLink">Sign In</a></span>
+      </div>
+<div id="NoticeTool" class="headerPanel hidden" style="display: none;"><div id="NoticeToolList"><ol class="dropdown-menu dropdown-menu-right" style="display: block;"><li class="js-last text-center"><a href="http://www.wikispaces.com/mail/list/?folder=Inbox">View All Messages</a></li></ol></div></div><div id="WikiTool" class="headerPanel hidden" style="display: none;"><div id="WikiToolList"><ol class="dropdown-menu dropdown-menu-right" style="display: block;"></ol></div></div><div id="HelpTool" class="headerPanel hidden" style="display: none;"><div id="HelpToolList"><ol class="dropdown-menu dropdown-menu-right" style="display: block;"><li class="js-last divider hidden"></li><li><a class="js-help-trigger" rel="nofollow" target="_blank" href="http://helpcenter.wikispaces.com/">Wiki Help</a></li></ol></div></div></div>              </div>
+            </div>
+          </div>
+          <div class="ws-navbar-middle-xs">
+            <div class="navbar-brand" role="navigation">
+              <a href="http://www.wikispaces.com/" class="ws-logo"></a>
+              <i class="fa fa-angle-right"></i>
+              <a href="http://chessprogramming.wikispaces.com/">chessprogramming</a>
+                              <i class="fa fa-angle-right"></i> <a href="http://chessprogramming.wikispaces.com/home">Home</a>
+              
+            </div>
+          </div>
+                    <form action="http://chessprogramming.wikispaces.com/search/view" method="post" class="navbar-form ws-include-xs pull-left ws-navbar-search hidden-xs" role="search"><input type="hidden" name="wikispacesFormToken" value="27c28cacb380602bb40338fd8aadb06b28335ded"><input type="text" class="form-control search-query" name="q" value="" placeholder="Search"> </form>
+                  </div>
+      </div>
+    </div>
+  </div>
+      <div class="hidden-xs"><div class="WikiInternalHeaderNav WikiElement floating" style="right: -143.172px;">
+  <div class="WikiInternalHeaderNavMenu">
+                                    <span class="WikiInternalHeaderNavMenuArea guestUserName">guest</span><span class="slideMarker divider">|</span>
+        
+                  <span class="WikiInternalHeaderNavMenuArea"><a href="http://www.wikispaces.com/user/join?goto=http%3A%2F%2Fchessprogramming.wikispaces.com%2FSimplified%2Bevaluation%2Bfunction" rel="nofollow" class="WikispacesXDomainDialogLink">Join</a></span>
+
+          <span class="divider">|</span>
+        
+        <span class="WikiInternalHeaderNavMenuArea"><a class="js-help-trigger" rel="nofollow" href="http://helpcenter.wikispaces.com/">Help</a></span>
+
+        <span class="divider">|</span>
+      
+      <span class="WikiInternalHeaderNavMenuArea"><a href="http://www.wikispaces.com/site/signin?goto=http%3A%2F%2Fchessprogramming.wikispaces.com%2FSimplified%2Bevaluation%2Bfunction" rel="nofollow" class="WikispacesXDomainDialogLink">Sign In</a></span>
+      </div>
+<div id="NoticeTool" class="headerPanel hidden" style="display: none;"><div id="NoticeToolList"><ol class="dropdown-menu dropdown-menu-right" style="display: block;"><li class="js-last text-center"><a href="http://www.wikispaces.com/mail/list/?folder=Inbox">View All Messages</a></li></ol></div></div><div id="WikiTool" class="headerPanel hidden" style="display: none;"><div id="WikiToolList"><ol class="dropdown-menu dropdown-menu-right" style="display: block;"></ol></div></div><div id="HelpTool" class="headerPanel hidden" style="display: none;"><div id="HelpToolList"><ol class="dropdown-menu dropdown-menu-right" style="display: block;"><li class="js-last divider hidden"></li><li><a class="js-help-trigger" rel="nofollow" target="_blank" href="http://helpcenter.wikispaces.com/">Wiki Help</a></li></ol></div></div></div></div>
+  </div></div><div id="js-fixed-header-offset" style="margin-top: 0px;">
+
+<div class="ws-theme-body">
+  <div class="ws-theme-container">
+    <div class="ws-theme-body-inner">
+      <nav class="ws-theme-sidebar" role="navigation">
+        <div class="ws-theme-sidebar-inner">
+                    <div class="ws-theme-logo">
+            <a href="http://chessprogramming.wikispaces.com/" class="WikiLogo WikiElement"><img src="./chessprogramming - Simplified evaluation function_files/logo.jpg" alt="chessprogramming"></a>          </div>
+                    <div class="ws-theme-menu">
+            <div class="ws-theme-menu-inner">
+              <ul class="WikiActions WikiElement WikiControls">
+    <li id="WikiActionHome"><div><span class="WikiActionSupplemental" style="float: right;"></span><a href="http://chessprogramming.wikispaces.com/"><i class="fa fa-home fa-fw"></i></a><a href="http://chessprogramming.wikispaces.com/">Wiki Home</a></div></li>
+    <li id="WikiActionChanges"><div><span class="WikiActionSupplemental" style="float: right;"></span><a href="http://chessprogramming.wikispaces.com/wiki/changes"><i class="fa fa-clock-o fa-fw"></i></a><a href="http://chessprogramming.wikispaces.com/wiki/changes">Recent Changes</a></div></li>
+    <li id="WikiActionPagesAndFiles"><div><span class="WikiActionSupplemental" style="float: right;"></span><a href="http://chessprogramming.wikispaces.com/space/content"><i class="fa fa-file-text-o fa-fw"></i></a><a href="http://chessprogramming.wikispaces.com/space/content">Pages and Files</a></div></li>
+    <li id="WikiActionMembers"><div class="js-member-link"><span class="WikiActionSupplemental" style="float: right;"></span><a href="http://chessprogramming.wikispaces.com/wiki/members"><i class="fa fa-user fa-fw"></i></a><a href="http://chessprogramming.wikispaces.com/wiki/members">Members</a></div></li>
+</ul>
+              <form action="http://chessprogramming.wikispaces.com/search/view" method="post" class="WikiSearch WikiElement" role="search"><input type="text" class="form-control WikiSearchInput" name="q" value="" placeholder="Search"> </form>              <div class="WikiCustomNav WikiElement wiki"><strong><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Home">Home</a></strong><br>
+<ul><li><strong><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Home#ChessProgramming">Basics</a></strong><ul><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Getting%20Started">Getting Started</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Board%20Representation">Board Representation</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Search">Search</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Evaluation">Evaluation</a></li></ul></li><li><strong><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Home#PrincipleTopics">Principle Topics</a></strong><ul><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Chess">Chess</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Programming">Programming</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Artificial%20Intelligence">Artificial Intelligence</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Knowledge">Knowledge</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Learning">Learning</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Engine%20Testing">Testing</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Automated%20Tuning">Tuning</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/User%20Interface">User Interface</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Protocols">Protocols</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Dictionary">Dictionary</a></li></ul></li><li><strong><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Home#Lists">Lists</a></strong><ul><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Arts">Arts</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Cartoons">Cartoons</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Computer%20Chess%20Forums">CC Forums</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Conferences">Conferences</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Dedicated%20Chess%20Computers">Dedicated CC</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Engines">Engines</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Games">Games</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Hardware">Hardware</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/History">History</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Organizations">Organizations</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Papers">Papers</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/People">People</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Periodical">Periodical</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Samples">Samples</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Software">Software</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Timeline">Timeline</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Tournaments">Tournaments and Matches</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Videos">Videos</a></li></ul></li><li><strong><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Home#Help">Misc</a></strong><ul><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Acknowledgments">Acknowledgments</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Guidance%20for%20Creating%20New%20Pages">On New Pages</a></li><li><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Recommended%20Reading">Recommended Reading</a></li><li><a class="wiki_link" href="https://help.wikispaces.com/home">Wikispaces Help</a></li></ul></li></ul></div>              <div class="ws-theme-nav-edit">
+                              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <main class="ws-theme-content" role="main">
+        <div class="ws-theme-content-inner">
+          <div class="contentBox"><div class="innerContentBox" id="WikiContent">
+
+<script type="text/template" id="comment-footer-template">
+
+<div class="commentFooter modal-footer">
+  <div class="pull-left">
+    <button type="button" class="btn btn-default btn-sm previous"><i class="fa fa-arrow-left"></i></button>
+    <button type="button" class="btn btn-default btn-sm next"><i class="fa fa-arrow-right"></i></button>
+  </div>
+  <% if (ws.context.user.canAdministerWiki && !ws.comments.Manager.readOnly) { %>
+  <div class="pull-right">
+    <button type="button" class="btn btn-default btn-sm remove">Remove</button>
+  </div>
+  <% } %>
+</div>
+
+</script>
+
+<script type="text/template" id="comment-content-template">
+<div class="ws-box commentView">
+  <div class="comment-close">
+    <button type="button" class="closeme close" aria-hidden="true"><i class="fa fa-times"></i></button>
+  </div>
+  <div class="commentHeader">
+    <p class="ws-stream-meta command-context">
+      <a class="userLink userLinkPicture" href="<%= userCreated.url %>"><img class="userPicture" src="<%= userCreated.imageUrl %>" width="16" height="16"></a>
+      <a href="<%= userCreated.url %>"><%= userCreated.username %></a>
+      <% if (smartDate == '__live__') { %>
+      <abbr class="timeago" title="<%= (new Date(parseInt(dateCreated, 10) * 1000)).toISOString() %>">
+        <%= dateCreated %>
+      </abbr>
+      <% } else { %>
+        <%- smartDate %>
+      <% } %>
+      <% if (ws.context.user.canAdministerWiki && ws.comments.Manager.readOnly) { %>
+        <i class="fa fa-trash-o contextual-command delete ws-tip" title="Delete Comment"></i>
+      <% } %>
+    </p>
+  </div>
+
+  <div class="commentBody">
+    <div class="commentContent">
+      <%= description %>
+    </div>
+
+      <% for(i = 0; i < replyPages.length; i++) { %>
+        <% for(var j = 0; j < replyPages[i].digests.length; j++) { %>
+      <div class="commentReply" data-id="<%= replyPages[i].digests[j].id %>">
+        <p class="ws-stream-meta command-context">
+          <a class="userLink userLinkPicture" href="<%= replyPages[i].digests[j].userCreated.url %>"><img class="userPicture" src="<%= replyPages[i].digests[j].userCreated.imageUrl %>" width="16" height="16"></a>
+          <a href="<%= replyPages[i].digests[j].userCreated.url %>"><%= replyPages[i].digests[j].userCreated.username %></a>
+          <% if (smartDate == '__live__') { %>
+          <abbr class="timeago" title="<%= (new Date(parseInt(replyPages[i].digests[j].dateCreated, 10) * 1000)).toISOString() %>">
+            <%= new Date(parseInt(replyPages[i].digests[j].dateCreated, 10) * 1000).toLocaleString() %>
+          </abbr>
+          <% } else { %>
+            <%- smartDate %>
+          <% } %>
+          <% if (ws.context.user.canAdministerWiki) { %>
+          <i class="fa fa-trash-o contextual-command delete-reply ws-tip" title="Delete Reply"></i>
+          <% } %>
+          </p>
+        <div class="commentContent"><%= replyPages[i].digests[j].body %></div>
+      </div>
+        <% } %>
+      <% } %>
+
+      <form class="reply commentReply">
+        <div class="form-group">
+          <textarea name="reply" placeholder="Reply" class="form-control" /></textarea>
+        </div>
+        <div class="btn-toolbar">
+          <button type="submit" class="btn btn-primary btn-sm" name="go" value="1">Post</button>
+
+          <% if (ws.context.user.id) { %>
+            <% if (monitored) { %>
+            <button type="button" class="btn btn-default btn-sm pull-right toggle-monitor ws-tip active" title="You are monitoring replies."><i class="fa fa-eye"></i></button>
+            <% } else { %>
+            <button type="button" class="btn btn-default btn-sm pull-right toggle-monitor ws-tip" title="You are not monitoring replies."><i class="fa fa-eye"></i></button>
+            <% } %>
+          <% } %>
+          <% if (ws.context.user.canAdministerWiki) { %>
+            <% if (locked) { %>
+            <button type="button" class="btn btn-default btn-sm pull-right toggle-lock ws-tip active" title="Replies are not allowed."><i class="fa fa-lock"></i></button>
+            <% } else { %>
+            <button type="button" class="btn btn-default btn-sm pull-right toggle-lock ws-tip" title="Replies are allowed."><i class="fa fa-lock"></i></button>
+            <% } %>
+          <% } %>
+
+          <i class="fa fa-spinner fa-spin spinner pull-right hidden"></i>
+        </div>
+      </form>
+   </div>
+
+   
+<div class="commentFooter modal-footer">
+  <div class="pull-left">
+    <button type="button" class="btn btn-default btn-sm previous"><i class="fa fa-arrow-left"></i></button>
+    <button type="button" class="btn btn-default btn-sm next"><i class="fa fa-arrow-right"></i></button>
+  </div>
+  <% if (ws.context.user.canAdministerWiki && !ws.comments.Manager.readOnly) { %>
+  <div class="pull-right">
+    <button type="button" class="btn btn-default btn-sm remove">Remove</button>
+  </div>
+  <% } %>
+</div>
+
+</div>
+</script>
+
+<script type="text/template" id="comment-composer-template">
+<div class="ws-box commentView">
+  <div class="commentComposer">
+    <div class="comment-close">
+      &nbsp;<button type="button" class="close closeme" aria-hidden="true"><i class="fa fa-times"></i></button>
+    </div>
+    <div class="commentHeader">
+      <p class="ws-stream-meta command-context">
+        <img class="userPicture" src="<%= userCreated.imageUrl %>" width="16" height="16">
+        <a href="#" onclick="return false;"><%= userCreated.username %></a>
+      </p>
+    </div>
+    <div class="commentBody">
+      <textarea name="comment" class="compose form-control" placeholder="Comment"/></textarea><br/>
+      <div class="btn-toolbar">
+        <button type="button" class="btn btn-default btn-sm monitored active pull-right" style="margin-left: 6px" onclick="jQuery(this).toggleClass('active')"><i class="fa fa-eye"></i></button>
+        <button type="button" class="btn btn-default btn-sm locked btn-toggle pull-right" onclick="jQuery(this).toggleClass('active')"><i class="fa fa-lock"></i></button>
+        <button type="button" class="btn btn-primary btn-sm closeme">Save</button>
+      </div>
+    </div>
+  </div>
+
+  
+<div class="commentFooter modal-footer">
+  <div class="pull-left">
+    <button type="button" class="btn btn-default btn-sm previous"><i class="fa fa-arrow-left"></i></button>
+    <button type="button" class="btn btn-default btn-sm next"><i class="fa fa-arrow-right"></i></button>
+  </div>
+  <% if (ws.context.user.canAdministerWiki && !ws.comments.Manager.readOnly) { %>
+  <div class="pull-right">
+    <button type="button" class="btn btn-default btn-sm remove">Remove</button>
+  </div>
+  <% } %>
+</div>
+
+</div>
+</script>
+
+<script type="text/template" id="comment-proxy-template">
+<div class="comment-proxy">
+  <span class="commentUser">
+  <% if (userCreated) { %>
+    <img class="userPicture" src="<%= userCreated.imageUrl %>" width="16" height="16">
+  <% } else { %>
+    <img class="userPicture" src="<%= ws.context.user.imageUrlPrefix %>sm.jpg" width="16" height="16">
+  <% } %>
+  </span>
+  <span class="commentReplies"><%= 1 + _(replyPages).reduce(function(memo, page){ return memo + page.digests.length; }, 0) %></span>
+</div>
+</script>
+
+<div class="ws-menu-bar WikiControls WikispacesContent WikispacesBs3">
+  
+    <h1 class="pageTitle"><a href="http://chessprogramming.wikispaces.com/Simplified+evaluation+function">Simplified evaluation function</a></h1>
+      <div class="btn-group pull-right">
+          <span class="btn btn-default disabled tipme" title="" data-original-title="you do not have permission to edit this page"><i class="fa fa-pencil fa-fw"></i> Edit</span>          <a class="btn btn-default tipme" title="" href="http://chessprogramming.wikispaces.com/Simplified+evaluation+function#discussion" data-original-title="no discussion posts"><i class="fa fa-comments fa-fw"></i> 0</a>          <a class="btn btn-default tipme" title="" href="http://chessprogramming.wikispaces.com/page/history/Simplified+evaluation+function" data-original-title="view 14 revisions"><i class="fa fa-clock-o fa-fw"></i> 14</a>          <a class="btn btn-default ws-btn-more dropdown-toggle tipme" title="" href="http://chessprogramming.wikispaces.com/page/menu/Simplified+evaluation+function" data-original-title="more options"><i class="icon-height-only fa-fw"></i>…</a>        <ul class="ws-more-menu dropdown-menu dropdown-menu-right">
+              <li class=" dropdown"><a class=" ws-tag-dropdown-toggle" href="http://chessprogramming.wikispaces.com/page/tags/Simplified+evaluation+function"><span class="pull-right">1</span> <i class="fa fa-tag fa-fw"></i> Tags</a>
+          <div class="dropdown-menu dropdown-menu-right ws-tag-dropdown-menu">
+          
+
+
+
+<form action="http://chessprogramming.wikispaces.com/Simplified+evaluation+function#" name="WikiTagForm" class="WikiTagForm"><input type="hidden" name="wikispacesFormToken" value="fa8d3664faaf9c80c23a234ade2c6d5ca16b4c7c"><input type="hidden" name="wikispacesFormToken" value="fa8d3664faaf9c80c23a234ade2c6d5ca16b4c7c">
+  <div class="WikiTagList">
+    <i class="fa fa-tag ws-action"></i>
+        <ul class="list-unstyled">
+                          <li><a href="http://chessprogramming.wikispaces.com/space/content?tag=evaluation">evaluation</a></li>
+              </ul>
+      </div>
+  </form>      </div>
+    </li>
+              <li class="divider"></li>
+            <li class=""><a class=" WikispacesDialogLink" href="http://chessprogramming.wikispaces.com/wiki/addmonitor?monitorLink=page%3ASimplified%20evaluation%20function"><i class="fa fa-eye fa-fw"></i> Notify</a>
+    </li>
+        <li class=""><a class=" WikispacesDialogLink" href="http://chessprogramming.wikispaces.com/page/rss/Simplified+evaluation+function"><i class="fa fa-rss fa-fw"></i> RSS</a>
+    </li>
+        <li class=""><a class="" href="http://chessprogramming.wikispaces.com/page/links/Simplified+evaluation+function"><i class="fa fa-link fa-fw"></i> Backlinks</a>
+    </li>
+              <li class="divider"></li>
+            <li class=""><a class="" href="http://chessprogramming.wikispaces.com/page/code/Simplified+evaluation+function"><i class="fa fa-code fa-fw"></i> Source</a>
+    </li>
+        <li class=""><a class="" href="http://chessprogramming.wikispaces.com/Simplified+evaluation+function?f=print"><i class="fa fa-print fa-fw"></i> Print</a>
+    </li>
+        <li class=""><a class="" href="http://chessprogramming.wikispaces.com/page/pdf/Simplified+evaluation+function"><i class="fa fa-cloud-download fa-fw"></i> Export (PDF)</a>
+    </li>
+      </ul>  </div>
+  </div>
+
+
+
+
+  <textarea class="form-control" id="autosaveContent" style="display:none;" rows="1" cols="1"></textarea>
+  <div id="autosavePrompt" style="display:none;"></div>
+
+<div class="commentContainer">
+  <div class="commentSubject">
+  <div class="wiki wikiPage" id="content_view">
+  <!-- ws:start:WikiTextTocRule:39:&lt;img id=&quot;wikitext@@toc@@normal&quot; class=&quot;WikiMedia WikiMediaToc&quot; title=&quot;Table of Contents&quot; src=&quot;/site/embedthumbnail/toc/normal?w=225&amp;h=100&quot;/&gt; --><div id="toc"><h1 class="nopad">Table of Contents</h1><!-- ws:end:WikiTextTocRule:39 --><!-- ws:start:WikiTextTocRule:40: --><div style="margin-left: 1em;"><a href="http://chessprogramming.wikispaces.com/Simplified+evaluation+function#Piece%20Values">Piece Values</a></div>
+<!-- ws:end:WikiTextTocRule:40 --><!-- ws:start:WikiTextTocRule:41: --><div style="margin-left: 1em;"><a href="http://chessprogramming.wikispaces.com/Simplified+evaluation+function#Piece-Square%20Tables">Piece-Square Tables</a></div>
+<!-- ws:end:WikiTextTocRule:41 --><!-- ws:start:WikiTextTocRule:42: --><div style="margin-left: 2em;"><a href="http://chessprogramming.wikispaces.com/Simplified+evaluation+function#Piece-Square%20Tables-Pawns">Pawns</a></div>
+<!-- ws:end:WikiTextTocRule:42 --><!-- ws:start:WikiTextTocRule:43: --><div style="margin-left: 2em;"><a href="http://chessprogramming.wikispaces.com/Simplified+evaluation+function#Piece-Square%20Tables-Knights">Knights</a></div>
+<!-- ws:end:WikiTextTocRule:43 --><!-- ws:start:WikiTextTocRule:44: --><div style="margin-left: 2em;"><a href="http://chessprogramming.wikispaces.com/Simplified+evaluation+function#Piece-Square%20Tables-Bishops">Bishops</a></div>
+<!-- ws:end:WikiTextTocRule:44 --><!-- ws:start:WikiTextTocRule:45: --><div style="margin-left: 2em;"><a href="http://chessprogramming.wikispaces.com/Simplified+evaluation+function#Piece-Square%20Tables-Rooks">Rooks</a></div>
+<!-- ws:end:WikiTextTocRule:45 --><!-- ws:start:WikiTextTocRule:46: --><div style="margin-left: 2em;"><a href="http://chessprogramming.wikispaces.com/Simplified+evaluation+function#Piece-Square%20Tables-Queen">Queen</a></div>
+<!-- ws:end:WikiTextTocRule:46 --><!-- ws:start:WikiTextTocRule:47: --><div style="margin-left: 2em;"><a href="http://chessprogramming.wikispaces.com/Simplified+evaluation+function#Piece-Square%20Tables-King">King</a></div>
+<!-- ws:end:WikiTextTocRule:47 --><!-- ws:start:WikiTextTocRule:48: --><div style="margin-left: 1em;"><a href="http://chessprogramming.wikispaces.com/Simplified+evaluation+function#What%20links%20here?">What links here?</a></div>
+<!-- ws:end:WikiTextTocRule:48 --><!-- ws:start:WikiTextTocRule:49: --></div>
+<!-- ws:end:WikiTextTocRule:49 --><strong><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Home">Home</a> * <a class="wiki_link" href="http://chessprogramming.wikispaces.com/Evaluation">Evaluation</a> * Simplified evaluation function</strong><br>
+<br>
+The content of this page has been originally posted by <a class="wiki_link" href="http://chessprogramming.wikispaces.com/Tomasz%20Michniewski">Tomasz Michniewski</a> on the Polish chess programming discussion list (progszach). It contains a proposal of extremely basic evaluation function required from the participants of a "Unified Evaluation" test tournament. Please note that the values presented here have been designed specifically to compensate for the lack of any other chess knowledge, and <strong>not</strong> for being supplemented by it.<br>
+<br>
+There are two parts of this email, the first is about simple <a class="wiki_link" href="http://chessprogramming.wikispaces.com/Point%20Value">piece values</a>, the second is about <a class="wiki_link" href="http://chessprogramming.wikispaces.com/Piece-Square%20Tables">piece-square tables</a>.<br>
+<br>
+<!-- ws:start:WikiTextHeadingRule:21:&lt;h1&gt; --><h1 id="toc0"><a name="Piece Values"></a><!-- ws:end:WikiTextHeadingRule:21 -->Piece Values</h1>
+ <tt>Setting piece values I wanted to achieve several results:</tt><br>
+<ol><li><tt>Avoid exchanging one minor piece for three pawns.</tt></li><li><tt>Encourage the engine to have the bishop pair.</tt></li><li><tt>Avoid exchanging of two minor pieces for a rook and a pawn.</tt></li><li><tt>Stick to human chess experience.</tt></li></ol><br>
+<tt>Point 1 is achieved by simple:</tt><br>
+<!-- ws:start:WikiTextCodeRule:0:
+&lt;pre class=&quot;text&quot;&gt;B &amp;gt; 3P&lt;br/&gt;N &amp;gt; 3P&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">B &gt; 3P
+N &gt; 3P</pre>
+
+<!-- ws:end:WikiTextCodeRule:0 --><tt>Of course there are positions where three (or even two) pawns are better than a piece. But generally, exchanging of a minor piece for three pawns is a bad idea, as these pawns might come under attack and after capturing one of them the position becomes critical. So in longer term it is better to have a piece, not three pawns.</tt><br>
+<br>
+<tt>Point 2 is achieved by:</tt><br>
+<!-- ws:start:WikiTextCodeRule:1:
+&lt;pre class=&quot;text&quot;&gt;B &amp;gt; N&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">B &gt; N</pre>
+
+<!-- ws:end:WikiTextCodeRule:1 --><tt>Of course this doesn't guarantee anything, because we may end up with just one bishop against one knight. But on the other hand chess players often capture bishop with knight while rarely capture knight with bishop. For example white bishop d3 rarely captures black knight standing on central square e4. On the contrary, white knight on e4 may easily capture black bishop at f6. Of course one may say that sometimes white bishop from g5 captures black knight at f6. But this often happens after forcing h6 or just time issues are involved, which we ignore here. The same with <a class="wiki_link_ext" href="http://en.wikipedia.org/wiki/Aron_Nimzowitsch" rel="nofollow">Nimzowitsch</a> bishop at b4, which should capture knight at c3 only after being forced with a3 let say.</tt><br>
+<br>
+<tt>So, we avoid unnecessary exchanging of a bishop for a knight. We increase the chance to have the bishop pair. On the other hand we risk to end up in an ending with either a wrong bishop or just a bishop over a knight with pawns on only one side or in closed position. So additional evaluation with looking at pawns' constellation is called for, but at this stage we can't afford this.</tt><br>
+<br>
+<tt>So together we may say:</tt><br>
+<!-- ws:start:WikiTextCodeRule:2:
+&lt;pre class=&quot;text&quot;&gt;B &amp;gt; N &amp;gt; 3P&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">B &gt; N &gt; 3P</pre>
+
+<!-- ws:end:WikiTextCodeRule:2 --><tt>Point 3 is achieved by:</tt><br>
+<!-- ws:start:WikiTextCodeRule:3:
+&lt;pre class=&quot;text&quot;&gt;B + N &amp;gt; R + P&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">B + N &gt; R + P</pre>
+
+<!-- ws:end:WikiTextCodeRule:3 --><tt>This is a bit problematic, as once I read in Russian Shachmaty that two minor pieces are worth a rook and two pawns. However, this might be an exageration. I may recall game from Karpov-Kasparov match where Kasparov could have won the ending with R + 2P against two minor pieces (plus some extra pawns on both sides). The game ended up in a draw, but a rook plus two pawns might be a bit too much. So instead of:</tt><br>
+<!-- ws:start:WikiTextCodeRule:4:
+&lt;pre class=&quot;text&quot;&gt;R + 2P &amp;gt; B + N &amp;gt; R + P&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">R + 2P &gt; B + N &gt; R + P</pre>
+
+<!-- ws:end:WikiTextCodeRule:4 -->let's say something between:<br>
+<!-- ws:start:WikiTextCodeRule:5:
+&lt;pre class=&quot;text&quot;&gt;B + N = R + 1.5P&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">B + N = R + 1.5P</pre>
+
+<!-- ws:end:WikiTextCodeRule:5 --><tt>OK, now I'd like to call for the word "symmetry". In chess the more symmetric position and material balance, the bigger probability of a draw result. Here, since the material balance isn't symmetric, we underline this with 1.5 factor, so the engine will either tend to have two minors against a rook plus a pawn or a rook plus two pawns against two minors. Please remember that this is still material evaluation, we aren't even in piece/square tables, not talking about real positional evaluation - so there is huge room for improvement in the future.</tt><br>
+<br>
+<tt>Additional comment to the last equation is that two knights would be a bit weaker than R + 1.5P, while two bishops would be a bit stronger, but this is not important now.</tt><br>
+<br>
+<tt>As you see I try to stick to the rule 4 as well. The final equation I would refer to is:</tt><br>
+<!-- ws:start:WikiTextCodeRule:6:
+&lt;pre class=&quot;text&quot;&gt;Q + P = 2R&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">Q + P = 2R</pre>
+
+<!-- ws:end:WikiTextCodeRule:6 -->Together we have:<br>
+<!-- ws:start:WikiTextCodeRule:7:
+&lt;pre class=&quot;text&quot;&gt;B &amp;gt; N &amp;gt; 3P&lt;br/&gt;B + N = R + 1.5P&lt;br/&gt;Q + P = 2R&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">B &gt; N &gt; 3P
+B + N = R + 1.5P
+Q + P = 2R</pre>
+
+<!-- ws:end:WikiTextCodeRule:7 --><tt>which might be satisfied by (values in <a class="wiki_link" href="http://chessprogramming.wikispaces.com/Centipawns">centipawns</a>):</tt><br>
+<!-- ws:start:WikiTextCodeRule:8:
+&lt;pre class=&quot;text&quot;&gt;P = 100&lt;br/&gt;N = 320&lt;br/&gt;B = 330&lt;br/&gt;R = 500&lt;br/&gt;Q = 900&lt;br/&gt;K = 20000&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">P = 100
+N = 320
+B = 330
+R = 500
+Q = 900
+K = 20000</pre>
+
+<!-- ws:end:WikiTextCodeRule:8 --><tt>Additionally we can see that they satisfy another relationship:</tt><br>
+<!-- ws:start:WikiTextCodeRule:9:
+&lt;pre class=&quot;text&quot;&gt;B + 2P &amp;gt; N + 2P &amp;gt; R&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">B + 2P &gt; N + 2P &gt; R</pre>
+
+<!-- ws:end:WikiTextCodeRule:9 --><tt>However I didn't like to use it, because to exchange a rook for a minor piece and two pawns it is not enough to simply capture a knight with a rook and then additionally capture the recapturing pawn, because we additionally need two extra plies for capturing of another pawn. So this isn't often - instead just a rook for a minor piece plus one pawn is more often, where additionally some compensation is achieved. But this isn't our subject at the moment.</tt><br>
+<br>
+<tt>According to these settings:</tt><br>
+<!-- ws:start:WikiTextCodeRule:10:
+&lt;pre class=&quot;text&quot;&gt;2B + N &amp;gt; Q&lt;br/&gt;and&lt;br/&gt;R + B + P &amp;gt; Q (or R + N + P &amp;gt; Q as well)&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">2B + N &gt; Q
+and
+R + B + P &gt; Q (or R + N + P &gt; Q as well)</pre>
+
+<!-- ws:end:WikiTextCodeRule:10 --><tt>I don't know what is Adam's or Mateusz's opinion about these relations and all the settings. I don't like last two formulas, but on the other hand I would like to stick to the classical rule:</tt><br>
+<!-- ws:start:WikiTextCodeRule:11:
+&lt;pre class=&quot;text&quot;&gt;Q + P = 2R&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">Q + P = 2R</pre>
+
+<!-- ws:end:WikiTextCodeRule:11 --><br>
+<tt>Additional comment to:</tt><br>
+<!-- ws:start:WikiTextCodeRule:12:
+&lt;pre class=&quot;text&quot;&gt;K = 20000&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">K = 20000</pre>
+
+<!-- ws:end:WikiTextCodeRule:12 --><tt>This is <a class="wiki_link" href="http://chessprogramming.wikispaces.com/Claude%20Shannon">Shannon's</a> value for the king, which sometimes might be useful for discovering whether the king was taken. It has this feature that the maximal material balance has a value of 20000 + 9*900 + 2*500 + 4*300 = 30300 (approx.) and might be stored as 2 byte integer with a sign, so if someone wants to store two such values in one 4 byte integer - why not.</tt><br>
+<br>
+<tt>Another comment is that sometimes material balance might be perceived as investing on the stock exchange - we should look at the results in longer perspective. I'd like to recall the example with a game, where one side wins without moving Ra1, which waited silently for development of Nb1, which wasn't touched at all. This side somehow won. Now let's ask whether White would win if there was no white rook at a1 from the beginning. Probably not. Why? Because there would appear exchange variants which would favour Black. So the material balance played its role. But the results of the presence of white rook at a1 could be seen only after several moves, maybe in the ending.</tt><br>
+<br>
+<!-- ws:start:WikiTextHeadingRule:23:&lt;h1&gt; --><h1 id="toc1"><a name="Piece-Square Tables"></a><!-- ws:end:WikiTextHeadingRule:23 -->Piece-Square Tables</h1>
+ <tt>Now, let's move for piece-square values. Generally I would like to give bonuses for pieces standing well and penalties for pieces standing badly. Other squares will have neutral value of 0. Of course one may incorporate above <a class="wiki_link" href="http://chessprogramming.wikispaces.com/Point%20Value">piece values</a> into <a class="wiki_link" href="http://chessprogramming.wikispaces.com/Piece-Square%20Tables">piece-square tables</a> if they wish. I don't do this.</tt><br>
+<br>
+<!-- ws:start:WikiTextHeadingRule:25:&lt;h2&gt; --><h2 id="toc2"><a name="Piece-Square Tables-Pawns"></a><!-- ws:end:WikiTextHeadingRule:25 -->Pawns</h2>
+ <tt>For pawns we simply encourage the pawns to advance. Additionally we try to discourage the engine from leaving central pawns unmoved. The problem I could see here is that this is contradictory to keeping pawns in front of the king. We also ignore the factor whether the pawn is passed or not. So more advanced evaluation is called for, especially that "pawns are soul of the game".</tt><br>
+<!-- ws:start:WikiTextCodeRule:13:
+&lt;pre class=&quot;text&quot;&gt;// pawn&lt;br/&gt; 0,  0,  0,  0,  0,  0,  0,  0,&lt;br/&gt;50, 50, 50, 50, 50, 50, 50, 50,&lt;br/&gt;10, 10, 20, 30, 30, 20, 10, 10,&lt;br/&gt; 5,  5, 10, 25, 25, 10,  5,  5,&lt;br/&gt; 0,  0,  0, 20, 20,  0,  0,  0,&lt;br/&gt; 5, -5,-10,  0,  0,-10, -5,  5,&lt;br/&gt; 5, 10, 10,-20,-20, 10, 10,  5,&lt;br/&gt; 0,  0,  0,  0,  0,  0,  0,  0&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">// pawn
+ 0,  0,  0,  0,  0,  0,  0,  0,
+50, 50, 50, 50, 50, 50, 50, 50,
+10, 10, 20, 30, 30, 20, 10, 10,
+ 5,  5, 10, 25, 25, 10,  5,  5,
+ 0,  0,  0, 20, 20,  0,  0,  0,
+ 5, -5,-10,  0,  0,-10, -5,  5,
+ 5, 10, 10,-20,-20, 10, 10,  5,
+ 0,  0,  0,  0,  0,  0,  0,  0</pre>
+
+<!-- ws:end:WikiTextCodeRule:13 --><tt>OK, let's comment this table. Firstly the shelter in front of white short castle (long castle - it's symmetrical) - pawns at f2, g2 and h2 get bonuses. Additionally we set negative values for f3 and smaller for g3 which both create holes around king. Pawn h2 have the same value on h2 and h3, so the engine may create the hole if the situation calls for it. Moreover - if it gets position with a pawn at g3 and a bishop at g2, then it still may play h3 or not. Therefore h3 has the same value as h2.</tt><br>
+<br>
+<tt>Zero value on f4, g4, h4 prevents playing with pawns in front of the king. Moving these pawns to f5, g5, h5 still brings nothing, but at this moment we have the same values as on rank 2.</tt><br>
+<br>
+<tt>In the centre we have the most negative values on d2 and e2. We don't like these pawns. d3 and e3 aren't good either. Only d4 and e4 in the centre. Even better on d5 and e5.</tt><br>
+<br>
+<tt>Beginning with rank 6th we give bonus for advanced pawns. On rank 7th even bigger.</tt><br>
+<br>
+<!-- ws:start:WikiTextHeadingRule:27:&lt;h2&gt; --><h2 id="toc3"><a name="Piece-Square Tables-Knights"></a><!-- ws:end:WikiTextHeadingRule:27 -->Knights</h2>
+ <tt>With knights we simply encourage them to go to the center. Standing on the edge is a bad idea. Standing in the corner is a terrible idea. Probably it was Tartakover who said that "one piece stands badly, the whole game stands badly". And knights move slowly.</tt><br>
+<!-- ws:start:WikiTextCodeRule:14:
+&lt;pre class=&quot;text&quot;&gt;// knight&lt;br/&gt;-50,-40,-30,-30,-30,-30,-40,-50,&lt;br/&gt;-40,-20,  0,  0,  0,  0,-20,-40,&lt;br/&gt;-30,  0, 10, 15, 15, 10,  0,-30,&lt;br/&gt;-30,  5, 15, 20, 20, 15,  5,-30,&lt;br/&gt;-30,  0, 15, 20, 20, 15,  0,-30,&lt;br/&gt;-30,  5, 10, 15, 15, 10,  5,-30,&lt;br/&gt;-40,-20,  0,  5,  5,  0,-20,-40,&lt;br/&gt;-50,-40,-30,-30,-30,-30,-40,-50,&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">// knight
+-50,-40,-30,-30,-30,-30,-40,-50,
+-40,-20,  0,  0,  0,  0,-20,-40,
+-30,  0, 10, 15, 15, 10,  0,-30,
+-30,  5, 15, 20, 20, 15,  5,-30,
+-30,  0, 15, 20, 20, 15,  0,-30,
+-30,  5, 10, 15, 15, 10,  5,-30,
+-40,-20,  0,  5,  5,  0,-20,-40,
+-50,-40,-30,-30,-30,-30,-40,-50,</pre>
+
+<!-- ws:end:WikiTextCodeRule:14 --><tt>As you can see I would happily trade for three pawns any knight standing on the edge. Additionally I put slight bonuses for e2, d2, b5, g5, b3 and g3. Then there are bonuses for being in the center.</tt><br>
+<br>
+<!-- ws:start:WikiTextHeadingRule:29:&lt;h2&gt; --><h2 id="toc4"><a name="Piece-Square Tables-Bishops"></a><!-- ws:end:WikiTextHeadingRule:29 -->Bishops</h2>
+ <!-- ws:start:WikiTextCodeRule:15:
+&lt;pre class=&quot;text&quot;&gt;// bishop&lt;br/&gt;-20,-10,-10,-10,-10,-10,-10,-20,&lt;br/&gt;-10,  0,  0,  0,  0,  0,  0,-10,&lt;br/&gt;-10,  0,  5, 10, 10,  5,  0,-10,&lt;br/&gt;-10,  5,  5, 10, 10,  5,  5,-10,&lt;br/&gt;-10,  0, 10, 10, 10, 10,  0,-10,&lt;br/&gt;-10, 10, 10, 10, 10, 10, 10,-10,&lt;br/&gt;-10,  5,  0,  0,  0,  0,  5,-10,&lt;br/&gt;-20,-10,-10,-10,-10,-10,-10,-20,&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">// bishop
+-20,-10,-10,-10,-10,-10,-10,-20,
+-10,  0,  0,  0,  0,  0,  0,-10,
+-10,  0,  5, 10, 10,  5,  0,-10,
+-10,  5,  5, 10, 10,  5,  5,-10,
+-10,  0, 10, 10, 10, 10,  0,-10,
+-10, 10, 10, 10, 10, 10, 10,-10,
+-10,  5,  0,  0,  0,  0,  5,-10,
+-20,-10,-10,-10,-10,-10,-10,-20,</pre>
+
+<!-- ws:end:WikiTextCodeRule:15 --><tt>We avoid corners and borders. Additionally we prefer squares like b3, c4, b5, d3 and the central ones. Moreover, I wouldn't like to exchange white bishop at d3 (or c3) for black knight at e4, so squares at c3 (f3) have value of 10. As a result white bishop at d3 (c3) is worth (330+10) and black knight at e4 is worth (320+20). So the choice of whether to exchange or not should depend on other issues. On the contrary white bishop at e4 (330+10) would be captured by black knight from f6 (320+10). White bishop at g5 (330+5) won't capture black knight at f6 (320+10).</tt><br>
+<br>
+<!-- ws:start:WikiTextHeadingRule:31:&lt;h2&gt; --><h2 id="toc5"><a name="Piece-Square Tables-Rooks"></a><!-- ws:end:WikiTextHeadingRule:31 -->Rooks</h2>
+ <!-- ws:start:WikiTextCodeRule:16:
+&lt;pre class=&quot;text&quot;&gt;rook&lt;br/&gt;  0,  0,  0,  0,  0,  0,  0,  0,&lt;br/&gt;  5, 10, 10, 10, 10, 10, 10,  5,&lt;br/&gt; -5,  0,  0,  0,  0,  0,  0, -5,&lt;br/&gt; -5,  0,  0,  0,  0,  0,  0, -5,&lt;br/&gt; -5,  0,  0,  0,  0,  0,  0, -5,&lt;br/&gt; -5,  0,  0,  0,  0,  0,  0, -5,&lt;br/&gt; -5,  0,  0,  0,  0,  0,  0, -5,&lt;br/&gt;  0,  0,  0,  5,  5,  0,  0,  0&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">rook
+  0,  0,  0,  0,  0,  0,  0,  0,
+  5, 10, 10, 10, 10, 10, 10,  5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+ -5,  0,  0,  0,  0,  0,  0, -5,
+  0,  0,  0,  5,  5,  0,  0,  0</pre>
+
+<!-- ws:end:WikiTextCodeRule:16 --><tt>The only ideas which came to my mind was to centralize, occupy the 7th rank and avoid a, h columns (in order not to defend pawn b3 from a3). So generally this is <a class="wiki_link" href="http://chessprogramming.wikispaces.com/Gerbil">Gerbil</a> like.</tt><br>
+<br>
+<!-- ws:start:WikiTextHeadingRule:33:&lt;h2&gt; --><h2 id="toc6"><a name="Piece-Square Tables-Queen"></a><!-- ws:end:WikiTextHeadingRule:33 -->Queen</h2>
+ <!-- ws:start:WikiTextCodeRule:17:
+&lt;pre class=&quot;text&quot;&gt;//queen&lt;br/&gt;-20,-10,-10, -5, -5,-10,-10,-20,&lt;br/&gt;-10,  0,  0,  0,  0,  0,  0,-10,&lt;br/&gt;-10,  0,  5,  5,  5,  5,  0,-10,&lt;br/&gt; -5,  0,  5,  5,  5,  5,  0, -5,&lt;br/&gt;  0,  0,  5,  5,  5,  5,  0, -5,&lt;br/&gt;-10,  5,  5,  5,  5,  5,  0,-10,&lt;br/&gt;-10,  0,  5,  0,  0,  0,  0,-10,&lt;br/&gt;-20,-10,-10, -5, -5,-10,-10,-20&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">//queen
+-20,-10,-10, -5, -5,-10,-10,-20,
+-10,  0,  0,  0,  0,  0,  0,-10,
+-10,  0,  5,  5,  5,  5,  0,-10,
+ -5,  0,  5,  5,  5,  5,  0, -5,
+  0,  0,  5,  5,  5,  5,  0, -5,
+-10,  5,  5,  5,  5,  5,  0,-10,
+-10,  0,  5,  0,  0,  0,  0,-10,
+-20,-10,-10, -5, -5,-10,-10,-20</pre>
+
+<!-- ws:end:WikiTextCodeRule:17 --><tt>Generally with queen I marked places where I wouldn't like to have a queen. Additionally I slightly marked central squares to keep the queen in the centre and b3, c2 squares (Paweł's suggestion). The rest should be done by tactics.</tt><br>
+<br>
+<!-- ws:start:WikiTextHeadingRule:35:&lt;h2&gt; --><h2 id="toc7"><a name="Piece-Square Tables-King"></a><!-- ws:end:WikiTextHeadingRule:35 -->King</h2>
+ <!-- ws:start:WikiTextCodeRule:18:
+&lt;pre class=&quot;text&quot;&gt;king middle game&lt;br/&gt;-30,-40,-40,-50,-50,-40,-40,-30,&lt;br/&gt;-30,-40,-40,-50,-50,-40,-40,-30,&lt;br/&gt;-30,-40,-40,-50,-50,-40,-40,-30,&lt;br/&gt;-30,-40,-40,-50,-50,-40,-40,-30,&lt;br/&gt;-20,-30,-30,-40,-40,-30,-30,-20,&lt;br/&gt;-10,-20,-20,-20,-20,-20,-20,-10,&lt;br/&gt; 20, 20,  0,  0,  0,  0, 20, 20,&lt;br/&gt; 20, 30, 10,  0,  0, 10, 30, 20&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">king middle game
+-30,-40,-40,-50,-50,-40,-40,-30,
+-30,-40,-40,-50,-50,-40,-40,-30,
+-30,-40,-40,-50,-50,-40,-40,-30,
+-30,-40,-40,-50,-50,-40,-40,-30,
+-20,-30,-30,-40,-40,-30,-30,-20,
+-10,-20,-20,-20,-20,-20,-20,-10,
+ 20, 20,  0,  0,  0,  0, 20, 20,
+ 20, 30, 10,  0,  0, 10, 30, 20</pre>
+
+<!-- ws:end:WikiTextCodeRule:18 --><tt>This is to make the king stand behind the pawn shelter.</tt><br>
+<br>
+<tt>In the ending the values change.</tt><br>
+<!-- ws:start:WikiTextCodeRule:19:
+&lt;pre class=&quot;text&quot;&gt;// king end game&lt;br/&gt;-50,-40,-30,-20,-20,-30,-40,-50,&lt;br/&gt;-30,-20,-10,  0,  0,-10,-20,-30,&lt;br/&gt;-30,-10, 20, 30, 30, 20,-10,-30,&lt;br/&gt;-30,-10, 30, 40, 40, 30,-10,-30,&lt;br/&gt;-30,-10, 30, 40, 40, 30,-10,-30,&lt;br/&gt;-30,-10, 20, 30, 30, 20,-10,-30,&lt;br/&gt;-30,-30,  0,  0,  0,  0,-30,-30,&lt;br/&gt;-50,-30,-30,-30,-30,-30,-30,-50&lt;/pre&gt;
+ -->
+<style type="text/css"><!--
+/**
+ * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
+ * (http://qbnz.com/highlighter/ and http://geshi.org/)
+ */
+.text  {font-family:monospace;}
+.text .imp {font-weight: bold; color: red;}
+.text span.xtra { display:block; }
+
+-->
+</style><pre class="text">// king end game
+-50,-40,-30,-20,-20,-30,-40,-50,
+-30,-20,-10,  0,  0,-10,-20,-30,
+-30,-10, 20, 30, 30, 20,-10,-30,
+-30,-10, 30, 40, 40, 30,-10,-30,
+-30,-10, 30, 40, 40, 30,-10,-30,
+-30,-10, 20, 30, 30, 20,-10,-30,
+-30,-30,  0,  0,  0,  0,-30,-30,
+-50,-30,-30,-30,-30,-30,-30,-50</pre>
+
+<!-- ws:end:WikiTextCodeRule:19 --><tt>And of course "These values are for white, for black I use mirrored values." Additionally we should define where the ending begins. For me it might be either if:</tt><br>
+<ol><li><tt>Both sides have no queens or</tt></li><li><tt>Every side which has a queen has additionally no other pieces or one minor</tt><tt>piece maximum.</tt></li></ol><br>
+<!-- ws:start:WikiTextHeadingRule:37:&lt;h1&gt; --><h1 id="toc8"><a name="What links here?"></a><!-- ws:end:WikiTextHeadingRule:37 -->What links here?</h1>
+<!-- ws:start:WikiTextIncludeRule:020:&lt;img src=&quot;http://www.wikispaces.com/site/embedthumbnail/include/backlinks?w=200&amp;h=100&quot; class=&quot;WikiMedia WikiMediaInclude&quot; id=&quot;wikitext@@include@@component=&amp;quot;backlinks&amp;quot; page=&amp;quot;Simplified evaluation function&amp;quot; limit=&amp;quot;40&amp;quot;&quot; title=&quot;Include backlinks: component=&amp;quot;backlinks&amp;quot; page=&amp;quot;Simplified evaluation function&amp;quot; limit=&amp;quot;40&amp;quot;&quot; /&gt; --><div class="includeBody-Simplified_evaluation_function includeBody-Simplified%20evaluation%20function includeBody"><table class="includeBacklinks">
+  <thead>
+    <tr class="includeBacklinksHeading">
+      <th class="includeBacklinksPageHeading">Page</th>
+      <th class="includeBacklinksDateHeading">Date Edited</th>
+    </tr>
+  </thead>
+    <tbody>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/Carballo" class="includeBacklinksLinkUrl">Carballo</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Oct 2, 2016</td>
+    </tr>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/Colin+Jenkins" class="includeBacklinksLinkUrl">Colin Jenkins</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Nov 24, 2017</td>
+    </tr>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/DayDreamer" class="includeBacklinksLinkUrl">DayDreamer</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Aug 22, 2016</td>
+    </tr>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/Evaluation" class="includeBacklinksLinkUrl">Evaluation</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Feb 1, 2018</td>
+    </tr>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/Evaluation+function" class="includeBacklinksLinkUrl">Evaluation function</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Sep 24, 2010</td>
+    </tr>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/Gerard+Zielinski" class="includeBacklinksLinkUrl">Gerard Zielinski</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Sep 25, 2014</td>
+    </tr>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/Lozza" class="includeBacklinksLinkUrl">Lozza</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Apr 18, 2018</td>
+    </tr>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/Material" class="includeBacklinksLinkUrl">Material</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Mar 31, 2018</td>
+    </tr>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/Paladin" class="includeBacklinksLinkUrl">Paladin</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Jan 29, 2017</td>
+    </tr>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/Piece-Square+Tables" class="includeBacklinksLinkUrl">Piece-Square Tables</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Mar 31, 2018</td>
+    </tr>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/Point+Value" class="includeBacklinksLinkUrl">Point Value</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Mar 31, 2018</td>
+    </tr>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/Point+Value+by+Regression+Analysis" class="includeBacklinksLinkUrl">Point Value by Regression Analysis</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Aug 26, 2017</td>
+    </tr>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/Simplified+evaluation+function" class="includeBacklinksLinkUrl">Simplified evaluation function</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Dec 2, 2014</td>
+    </tr>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/Tomasz+Michniewski" class="includeBacklinksLinkUrl">Tomasz Michniewski</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Mar 13, 2013</td>
+    </tr>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/Zeta+Dva" class="includeBacklinksLinkUrl">Zeta Dva</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Apr 11, 2017</td>
+    </tr>
+        <tr class="includeBacklinksLink">
+      <td class="includeBacklinksLinkPage">
+        <a href="http://chessprogramming.wikispaces.com/Zurichess" class="includeBacklinksLinkUrl">Zurichess</a>
+      </td>
+      <td class="includeBacklinksLinkDate">Mar 12, 2018</td>
+    </tr>
+      </tbody>
+</table></div><!-- ws:end:WikiTextIncludeRule:020 --><br>
+<strong><a class="wiki_link" href="http://chessprogramming.wikispaces.com/Evaluation">Up one Level</a></strong>
+  </div>
+
+<div id="pageEditor" class="editorWrapper editorLayer">
+  <iframe id="target_editor" name="target_editor" src="./chessprogramming - Simplified evaluation function_files/blank.html" style="width:0px;height:0px;border:0"></iframe>
+    <form action="http://chessprogramming.wikispaces.com/page/edit/Simplified+evaluation+function" method="post" class="editorForm" id="editorForm"><input type="hidden" name="wikispacesFormToken" value="d64451747e87f743562334da839faee528a684bb"><div class="movkp"><input type="text" class="form-control" name="wikispaces_user_id" value="user-1528971946" style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%;"></div><div class="jovise"><input type="text" class="form-control" name="goto" autocomplete="off"></div><div class="movkp"><input type="text" class="form-control" name="mode" autocomplete="off"></div><div class="mimw"><input type="text" class="form-control" name="version" autocomplete="off"></div><div class="movkp"><input type="text" class="form-control" name="pageComments" autocomplete="off"></div><div class="jovise"><input type="text" class="form-control" name="saveAndContinue" autocomplete="off"></div><div class="movkp"><input type="text" class="form-control" name="comment" autocomplete="off"></div><div class="jovise"><input type="text" class="form-control" name="commentsDisabled" autocomplete="off"></div><div class="movkp"><input type="text" class="form-control" name="contentPresent" autocomplete="off"></div><div class="wsh"><input type="text" class="form-control" name="editorCleanup" autocomplete="off"></div><div class="jovise"><input type="text" class="form-control" name="WikispacesEditorContent" autocomplete="off"></div><input type="hidden" name="wikispacesASFormToken" value="abf11d4a69ef3d931ad1f1cdca561666f53d8bc5">
+    <input type="hidden" title="goto" name="48039d623168dde08d2a41c5c6692f3c5bde2c1b" value="">
+    <input type="hidden" title="mode" name="0badaf192fa239e99cbaf2c15a8b6bf70697eb58" autocomplete="off" value="visual">
+    <input type="hidden" title="version" name="8633f9afc208e324aa608f6340cf0f01c518a313" autocomplete="off" value="533490220">
+    <input type="hidden" title="pageComments" name="4f7abef09fa9523d99148881a209e9cf10fb2dda" autocomplete="off" value="">
+    <input type="hidden" title="saveAndContinue" name="df2775e4bd85b8d3122c2a0a5e6238c02b82eac9" value="0">
+    <input type="hidden" title="comment" name="f1ed111f5fe06b78b6bbfe4c387e97287df9f536" value="">
+    <input type="hidden" title="commentsDisabled" name="7f3cafce3b6876ada488b223d10ee50ed58d13f0" autocomplete="off" value="">
+    <input type="hidden" title="contentPresent" name="bf8138de1324d3648458c494e6441340e52509f2" autocomplete="off" value="">
+    <input type="hidden" title="editorCleanup" name="efe932f530f8b72eab3b561c843a04e6054cb390" autocomplete="off" value="">
+
+    <textarea id="wsMainEditor" title="content" class="noContentHide" name="14872e056741a77fded7384f808b3578866986c7" style="width: 100%; position: absolute; top: -50000px; left: -50000px;" autocomplete="off"></textarea>
+
+  <noscript>
+    <h2>Javascript Required</h2>
+    <p>You need to enable Javascript in your browser to edit pages.</p>
+  </noscript>
+
+  </form>
+  
+  
+  <div id="plainTextEditor" style="position:relative;display:none" class="editorLayer">
+    <textarea id="textEditor" class="autogrow" style="height: 444px; overflow: hidden;"></textarea>
+    <p style="clear:both;" align="right"><a href="http://helpcenter.wikispaces.com/customer/portal/articles/1959131-wikitext">help on how to format text</a></p>
+  </div>
+</div>
+
+
+
+
+  </div>
+  <div class="commentColumn WikispacesStream"><div class="WikispacesContent WikispacesBs3"><div class="commentList"></div></div></div>
+</div>
+
+  
+
+
+
+
+<script type="text/template" id="js-event-template">
+  <small>
+    <%- startDateShortFormat %>
+    <a href="<%- ws.common.pathFor('event', 'view', id) %>" class="WikispacesDialogLink">
+      <%- ws.common.truncate(title, 15) %>
+    </a>
+  </small>
+</script>
+
+<script type="text/template" id="js-reply-template">
+  <div class="tc-timeline-comment media">
+
+    <a class="pull-left userLink" href="<%- userCreated.url %>">
+      <img src="<%- userCreated.imageUrl %>" width="30" height="30" class="author-avatar" alt="" />
+    </a>
+    <div class="media-body" data-id="<%= id %>">
+      <% if (ws.context.user.canAdministerWiki) { %>
+        <i class="tc-delete-comment fa fa-trash-o contextual-command destroy-message ws-tip" title="Delete reply"></i>
+      <% } %>
+      <div class="tc-box-name-date">
+        <span class="tc-commenter"><a href="<%- userCreated.url %>"><%- userCreated.username %></a></span>
+        <% if (smartDate == '__live__') { %>
+        <abbr style="border-bottom-style: none;" class="timeago tc-comment-date" title="<%- (new Date(parseInt(dateCreated) * 1000)).toISOString() %>">
+          <%- (new Date(parseInt(dateCreated) * 1000)).toDateString() %>
+        </abbr>
+        <% } else { %>
+          <abbr style="border-bottom-style: none;" class="tc-comment-date"><%- smartDate %></abbr>
+        <% } %>
+      </div>
+      <% if (body) { %>
+      <p>
+        <%= body %>
+      </p>
+      <% } %>
+    </div>
+  </div>
+</script>
+
+<script type="text/template" id="js-share-template">
+  <div class="tc-timeline-block tc-<%= ws.stream.typeToBlockType(sharedType) %>-block" <%= (ws.stream.hideTimeline ? 'style="padding-left: 0px;"' : '') %>>
+
+    <% if (!ws.stream.hideTimeline) { %>
+      <div class="tc-timeline-icon">
+        <i class="fa fa-<%= ws.stream.typeToIcon(sharedType) %>"></i>
+      </div>
+      <div class="tc-timeline-triangle-man"></div>
+    <% } %>
+
+    <div class="tc-timeline-box" data-id="<%= id %>">
+      <div class="media">
+        <a class="pull-left userLink" href="<%- userCreated.url %>">
+          <img src="<%- userCreated.imageUrl %>" width="48" height="48" class="author-avatar media-object" alt="" />
+        </a>
+
+        <div class="media-body">
+
+          <div class="tc-stream-dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+              <i class="fa fa-chevron-down"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+              <% if (ws.context.user.id) { %>
+              <li>
+                <a class="js-toggle-monitor" tabindex="-1" href="#">
+                  <i class="fa-fw fa fa-eye"></i>
+                  <span><%= monitored ? 'Start Monitoring' : 'Stop Monitoring' %></span>
+                </a>
+              </li>
+              <% } %>
+
+              <% if (ws.context.user.canAdministerWiki) { %>
+              <li>
+                <a class="js-toggle-lock" tabindex="-1" href="#">
+                  <i class="fa-fw fa fa-lock"></i>
+                  <span><%= locked ? 'Unlock Replies' : 'Lock Replies' %></span>
+                </a>
+              </li>
+              <% if (sharedType == 'discussion' || sharedType == 'comment' || sharedType == 'event') { %>
+              <li>
+                <a class="js-destroy-share" tabindex="-1" href="#">
+                  <i class="fa-fw fa fa-trash-o"></i>
+                  Delete <%= ws.stream.typeToName(sharedType) %>
+                </a>
+              </li>
+              <% } %>
+              <% } %>
+            </ul>
+          </div>
+
+          <div class="tc-timeline-box-header ws-reveal media-heading">
+              <h3 class="tc-box-title">
+              <% if (typeof adminLink !== 'undefined' && adminLink && ws.context.user.canAdministerWiki) { %>
+                <a href="<%- adminLink %>"><%- title %></a>
+              <% } else { %>
+                <%- title %>
+              <% } %>
+              <% if (typeof startDate !== 'undefined' && startDate) { %> - <%= startDateShortFormat %> <%= ws.stream.getYearFromStartDate(startDate) %><% } %>
+              </h3>
+              <div class="tc-box-name-date">
+                <% if (ws.context.instance.isTesClassroom) { %>
+                  <%- userCreated.username %>
+                <% } else { %>
+                  <a class="author-name" href="<%- userCreated.url %>"><%- userCreated.username %></a>
+                <% } %>
+                <% if (typeof recipients !== 'undefined' && recipients) { %>
+                  <i class="fa fa-angle-right"></i>
+                  <% if (typeof recipientsLink !== 'undefined') { %>
+                    <a href="<%- recipientsLink %>"><%- recipients %></a>
+                  <% } else { %>
+                    <span class="recipients"><%- recipients %></span>
+                  <% } %>
+                <% } %>
+                <% if (smartDate == '__live__') { %>
+                  <abbr style="border-bottom-style: none;" class="timeago tc-block-date" title="<%= (new Date(parseInt(dateCreated) * 1000)).toISOString() %>">
+                    <%= (new Date(parseInt(dateCreated) * 1000)).toDateString() %>
+                  </abbr>
+                <% } else { %>
+                  <abbr style="border-bottom-style: none;" class="tc-block-date"><%- smartDate %></abbr>
+                <% } %>
+              </div>
+          </div>
+
+          <div class="<%= sharedType == 'comment' && !orphaned && !ws.stream.noCollapse ? 'hidden ' : '' %>tc-block-content">
+            <div class="clearfix">
+              <% if (typeof rangeActions !== 'undefined') { %>
+                <div class="tc-range-actions">
+                  <% for(var i = 0; i < rangeActions.length; i++) { %>
+                  <%= ws.stream.rangeActionTemplate(rangeActions[i]) %>
+                  <% } %>
+                </div>
+              <% } %>
+              <% if (description) { %>
+                <p><%= description %></p>
+              <% } %>
+            </div>
+          </div>
+
+          <% if (replyPages.length > 0 && !(replyPages.length === 1 && replyPages[0].digests.length === 0)) { %>
+            <div class="tc-timeline-comments">
+            <% for (var i = 0; i < replyPages.length; i++) { %>
+              <% if (i == 0 && replyPages[i].more) { %>
+                <a href="#" class="tc-show-more" onclick="ws.stream.pageReplies(<%= id %>, <%= replyPages[i].page + 1 %>); return false">Show more replies (<%= replyPages[i].more %> hidden) </a>
+              <% } else { %>
+                <div></div>
+              <% } %>
+              <% for (var j = 0; j < replyPages[i].digests.length; j++) { %>
+                <%= ws.stream.replyTemplate(replyPages[i].digests[j]) %>
+              <% } %>
+            <% } %>
+            </div>
+          <% } %>
+
+          <% if ((ws.stream.userCanPostMessage && !locked) || ws.context.user.canAdministerWiki) { %>
+          <div class="tc-add-comment media <%= ws.stream.noCollapse ? 'add-active' : ''%>">
+            <img src="<%- ws.context.user.imageUrlPrefix %>lg.jpg" width="30" height="30" class="pull-left author-avatar" alt="" />
+            <div class="media-body">
+              <textarea name="reply" placeholder="Comment" class="form-control form-control-tc ws-reveal <%= !ws.stream.noCollapse ? 'ws-unrevealed' : ''%> reply" /></textarea>
+              <button type="button" class="btn-tc btn-info-tc btn-sm-tc add-reply">Post</button>
+            </div>
+          </div>
+          <% } %>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</script>
+
+<script type="text/template" id="js-range-action-template">
+  <div>
+    <strong><%- name %></strong>
+    <% if (typeof(diffUrl) !== 'undefined') { %>
+      <a href="<%- diffUrl %>">
+    <% } %>
+    <%= new Date(dateCreated * 1000).toLocaleString() %>
+    <% if (typeof(diffUrl) !== 'undefined') { %>
+      </a>
+    <% } %>
+    <% if (typeof(rangeText) !== 'undefined') { %>
+      <div>
+        <span class="commentExtent">
+        <% if (typeof(diffUrl) !== 'undefined') { %>
+          <a href="<%- diffUrl %>">
+        <% } %>
+        <%= rangeText %>
+        <% if (typeof(diffUrl) !== 'undefined') { %>
+          </a>
+        <% } %>
+        </span>
+      </div>
+    <% } %>
+  </div>
+</script>
+
+<script type="text/template" id="js-stream-end-template">
+  <div class="tc-timeline-block tc-end-block">
+    <div class="tc-timeline-icon" style="margin-top: -10px;" />
+    <div class="tc-timeline-box" style="visibility: hidden;">
+      <p class="tc-box-title"></p>
+    </div>
+  </div>
+</script>
+
+<a name="discussion"></a>
+<div class="timeline WikispacesBs3 tc-timeline-embedded show-border">
+  <div class="timeline-line"></div>
+    <div id="js-share-list">
+    <div class="spinner hidden"><i class="fa fa-spinner fa-spin"></i></div>
+  </div>
+</div></div></div><div id="sentinel" style="clear:both"></div>        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<footer class="ws-theme-footer" role="contentinfo">
+  <div class="ws-theme-container">
+    <div class="ws-theme-footer-inner">
+      <div class="WikiFooterNav WikiElement">
+<a href="http://helpcenter.wikispaces.com/" rel="nofollow" class="js-help-trigger">Help</a> ·
+<a href="http://www.wikispaces.com/about">About</a> ·
+<a href="http://www.wikispaces.com/content/pricing" rel="nofollow">Pricing</a> ·
+<a href="http://www.wikispaces.com/privacy" rel="nofollow">Privacy</a> ·
+<a href="http://www.wikispaces.com/terms" rel="nofollow">Terms</a> ·
+<a href="http://www.wikispaces.com/site/help?url=http%3A%2F%2Fchessprogramming.wikispaces.com%2FSimplified%2Bevaluation%2Bfunction" rel="nofollow"><strong>Support</strong></a> ·
+<a href="http://chessprogramming.wikispaces.com/space/subscribe/upgrade"><strong>Upgrade</strong></a>
+</div>      <div class="WikiLicense WikiElement">Contributions to http://chessprogramming.wikispaces.com/ are licensed under a <a rel="license" href="http://www.creativecommons.org/licenses/by-sa/3.0">Creative Commons Attribution Share-Alike 3.0 License</a>. <a rel="license" href="http://www.creativecommons.org/licenses/by-sa/3.0"><img src="./chessprogramming - Simplified evaluation function_files/by-sa_3.0_80x15.png" width="85" height="15" alt="Creative Commons Attribution Share-Alike 3.0 License"></a><br>Portions not contributed by visitors are Copyright 2018 Tangient LLC<br><a href="https://www.tes.com/us/?utm_source=wikispaces&amp;utm_medium=link&amp;utm_campaign=US-52-footer">TES: The largest network of teachers in the world</a></div>    </div>
+  </div>
+</footer>
+
+
+<script type="text/template" id="dialog-template">
+<div class="modal fade" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times"></i></button>
+        <h4 class="modal-title"><%= header %></h4>
+      </div>
+      <div class="modal-body">
+        <%= body %>
+      </div>
+    </div>
+  </div>
+</div>
+</script>
+
+
+<div id="js-help-template" class="hidden">
+  <div class="ws-help">
+    <div class="js-help-controls WikispacesContent WikispacesBs3">
+      <a href="http://www.wikispaces.com/site/gettingstarted/off" class="btn btn-default hidden js-getting-started-off pull-right">Turn off "Getting Started"</a>
+      <ol class="breadcrumb">
+        <li class="js-special-breadcrumb active">
+          <a href="http://helpcenter.wikispaces.com/" data-breadcrumb="0">Home</a>
+        </li>
+        <li class="js-ellipsis hidden js-special-breadcrumb">
+          ...
+        </li>
+        <li class="js-spinner hidden js-special-breadcrumb"><i class="fa fa-spinner fa-spin"></i></li>
+      </ol>
+    </div>
+    <div class="ws-help-content wiki">Loading...</div>
+  </div>
+</div>
+</div>
+<script src="./chessprogramming - Simplified evaluation function_files/94kxjvkz-common.min.js" type="text/javascript"></script>
+<script src="./chessprogramming - Simplified evaluation function_files/70163536-editorc.min.js" type="text/javascript"></script>
+<script src="./chessprogramming - Simplified evaluation function_files/85k7018k-stream.min.js" type="text/javascript"></script>
+<script src="./chessprogramming - Simplified evaluation function_files/91k8z207-contentbar.min.js" type="text/javascript"></script>
+<script src="./chessprogramming - Simplified evaluation function_files/395j1vq7-component.stream-vo.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+<!--
+ws.namespace('ws.attributes');
+ws.namespace('ws.stream');
+ws.attributes.DISCUSSION_COUNT = 0;
+ws.attributes.pageId = 4602471;
+ws.attributes.version = 533490220;
+ws.attributes.showEditor = true;
+ws.attributes.editUrl = "http:\/\/chessprogramming.wikispaces.com\/page\/edit\/Simplified+evaluation+function?goto=http%3A%2F%2Fchessprogramming.wikispaces.com%2FSimplified%2Bevaluation%2Bfunction";
+ws.attributes.userCanEdit = false;
+ws.stream.userCanPostMessage = false;
+ws.stream.hideTimeline = true;
+ws.stream.shareSource = "http:\/\/chessprogramming.wikispaces.com\/page\/shares\/Simplified+evaluation+function";
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+jQuery(document).ready(function() {
+  ws.common.addJsonNotices({"warning":[],"error":[],"info":[],"success":[]});
+});
+
+jQuery(document).ready(function() {
+  ws.common.addNotice("<script type=\"text\/javascript\">function wsDismissBanner() { ws.common.removeNotice();  ws.cookie.set(\"wsFirstPartShutdown\", 1, {expires: 365 * 86400, domain: \".wikispaces.com\"}); return false;}$(\".ui-pnotify-closer\").remove();<\/script><i class=\"fa fa-times fa-fw ws-close\" onclick=\"wsDismissBanner();\"><\/i>It\u2019s time for us to say farewell\u2026 Classroom and Free Wikis are closing Soon!<br\/>Find out more about the full Wikispaces Site Closure <a href='http:\/\/blog.wikispaces.com' target='_top'>HERE<a\/>", "warning");
+});
+
+jQuery(document).ready(function($) {
+  
+  function tipPlacement() {
+    return this.$element.closest('.ws-menu-bar .btn-group').is('.open') ? 'top' : 'bottom';
+  }
+
+  
+
+  $('.ws-menu-bar').each(function() {
+    var $menuBar = $(this);
+    var $tagDropdown = $menuBar.find('.ws-tag-dropdown-menu');
+    $menuBar.find('.tipme').tooltip({placement: tipPlacement, container: '.ws-menu-bar'});
+
+    
+    $menuBar.find('.ws-btn-more').click(ws.common.makeLinkClickFunction(function(e) {
+      if ($(this).closest('.ws-menu-bar .btn-group').is('.open')) {
+        ws.common.hideMorePageBar();
+      } else {
+        ws.common.showMorePageBar();
+      }
+    }));
+
+    $menuBar.on('click', '.ws-tag-dropdown-toggle', ws.common.makeLinkClickFunction(function(e) {
+      if ($(this).closest('.ws-menu-bar .dropdown').is('.open')) {
+        ws.common.hideTagDropdown();
+      } else {
+        ws.common.showTagDropdown();
+      }
+    }));
+
+    $(document.body).click(function(e) {
+      var $target = $(e.target);
+      if (!$target.closest('.ws-more-menu').closest('.ws-menu-bar').is($menuBar)
+          || $target.closest('a').is('.WikispacesDialogLink')) {
+        ws.common.hideMorePageBar();
+      }
+      if ($tagDropdown.length && !$target.closest('.ws-tag-dropdown-menu').is($tagDropdown)) {
+        ws.common.hideTagDropdown();
+      }
+    });
+    
+  });
+});
+
+
+jQuery(document).ready(function($) {
+  $('.ws-more-menu').on('click', 'a', function(e) {
+    if ($(this).is('.disabled')) {
+      e.preventDefault();
+    }
+  });
+});
+
+
+jQuery(document).ready(function() {
+  ws.editor.canEdit = false;
+  var editUrl = 'http://chessprogramming.wikispaces.com/page/edit/Simplified+evaluation+function?goto=http%3A%2F%2Fchessprogramming.wikispaces.com%2FSimplified%2Bevaluation%2Bfunction';
+
+  jQuery('#js-edit-from-template').change(function() {
+    window.location = ws.common.addUriParams(editUrl, [['template', jQuery(this).val()]]);
+  });
+});
+
+
+jQuery(document).ready(function() {
+  ws.editor.loadEditorLibs('http://www.wikispaces.com/site/editorlibs/en_US/11kk95v9.gz.js');
+});
+
+
+ws.editor.startEditor = function (moreCoreOptions, moreMainOptions) {
+  ws.editor.canEdit = true;
+
+  var coreOptions = {
+    'content_css': ['http://www.wikispaces.com/stylesheet/editori/217420326D.gz.css']
+  };
+
+  // The stylesheet is passed in as a string, turn it into an array
+  // Add bootstrap styles to the editor, if we are in a theme that has full screen bootstrap
+  if (jQuery('body').is('.WikispacesBs3')) {
+    coreOptions.content_css.push('http://www.wikispaces.com//s/internal-bootstrap-body.css');
+  }
+
+  var mainOptions = {
+    'wssave_cancel_url': '/Simplified+evaluation+function',
+    'wsimage_upload_url': 'http://chessprogramming.wikispaces.com/file/multiupload',
+    'wsimage_max_file_size_mb': '20',
+    'wsimage_page_view_group': ''
+  };
+
+  ws.editor.loadEditor(jQuery.extend(coreOptions, moreCoreOptions), jQuery.extend(mainOptions, moreMainOptions));
+};
+
+  var wikispaces_page_version = '533490220';
+
+  jQuery(document).ready(function() {
+    ws.editor.enableButtons();
+  });
+
+
+
+--></script><!-- w23 178 wki:89:90(2) dql:24:37(3) mem:1:12(29) tot:178:178(1) -->
+
+
+<div class="autogrow-shadow" style="position: absolute; top: -10000px; left: -10000px; font-size: 14px; font-family: arial, helvetica, sans-serif; font-weight: 400; line-height: 20px; resize: none; width: 96px;"></div><div class="ui-pnotify WikispacesContent WikispacesBs3" style="opacity: 1; display: block; right: 25px; top: 25px;"><div class="alert ui-pnotify-container alert-warning ui-pnotify-shadow" style="min-height: 16px;"><div class="ui-pnotify-icon"><span class="fa fa-exclamation-circle"></span></div><div class="ui-pnotify-sticker" style="cursor: pointer; visibility: hidden; display: none;"><span class="fa fa-pause" title="Stick"></span></div><h4 class="ui-pnotify-title hidden" style="display: none;"></h4><div class="ui-pnotify-text"><script type="text/javascript">function wsDismissBanner() { ws.common.removeNotice();  ws.cookie.set("wsFirstPartShutdown", 1, {expires: 365 * 86400, domain: ".wikispaces.com"}); return false;}$(".ui-pnotify-closer").remove();</script><i class="fa fa-times fa-fw ws-close" onclick="wsDismissBanner();"></i>It’s time for us to say farewell… Classroom and Free Wikis are closing Soon!<br>Find out more about the full Wikispaces Site Closure <a href="http://blog.wikispaces.com/" target="_top">HERE</a><a></a></div></div></div></body></html>
