@@ -108,7 +108,7 @@ var sum = (v1, v2) => {
         var score = materialScore(chess);
         if (chess.in_check()) score -= 5 * blackOrWhiteSign(chess);
         if (chess.in_checkmate()) score -= 1000000 * blackOrWhiteSign(chess);
-        //score += valueMoves(chess) * blackOrWhiteSign(chess);
+        score += valueMoves(chess) * blackOrWhiteSign(chess);
         score += positionScore(chess);
         score += castlingScore(chess);
         score += Math.random();
